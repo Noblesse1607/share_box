@@ -1,12 +1,12 @@
 'use client'
 import Image from "next/image";
-import loginImage from '../../public/login_image.svg';
-import loginImage2 from '../../public/login_image_2.svg';
-import gmailIcon from '../../public/envelope-regular.svg';
-import lockIcon from '../../public/lock-solid.svg';
-import googleIcon from '../../public/google_icon.svg';
-import eyeSlashIcon from '../../public/eye-slash-solid.svg';
-import eyeIcon from '../../public/eye-solid.svg';
+import loginImage from '../../../public/login_image.svg';
+import loginImage2 from '../../../public/login_image_2.svg';
+import gmailIcon from '../../../public/envelope-regular.svg';
+import lockIcon from '../../../public/lock-solid.svg';
+import googleIcon from '../../../public/google_icon.svg';
+import eyeSlashIcon from '../../../public/eye-slash-solid.svg';
+import eyeIcon from '../../../public/eye-solid.svg';
 import { useState, useEffect } from "react";
 import Link from "next/link";
 export default function Login() {
@@ -70,6 +70,11 @@ export default function Login() {
                         />
                     }
                   </div>
+                </div>
+                <div className="mt-2 w-full flex justify-end">
+                   <Link href="/forgot-password" className="text-textGrayColor1 hover:underline underline-offset-4 text-sm font-semibold">
+                       Forgot Password ?
+                   </Link>
                 </div>
               </div>
             </div>

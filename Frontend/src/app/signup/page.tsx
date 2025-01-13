@@ -1,15 +1,15 @@
 'use client'
 import Image from "next/image";
-import signupImage from '../../public/signup_image.svg';
-import signupImage2 from '../../public/signup_image_2.svg';
-import gmailIcon from '../../public/envelope-regular.svg';
-import lockIcon from '../../public/lock-solid.svg';
-import googleIcon from '../../public/google_icon.svg';
-import eyeSlashIcon from '../../public/eye-slash-solid.svg';
-import eyeIcon from '../../public/eye-solid.svg';
+import signupImage from '../../../public/signup_image.svg';
+import signupImage2 from '../../../public/signup_image_2.svg';
+import gmailIcon from '../../../public/envelope-regular.svg';
+import lockIcon from '../../../public/lock-solid.svg';
+import googleIcon from '../../../public/google_icon.svg';
+import eyeSlashIcon from '../../../public/eye-slash-solid.svg';
+import eyeIcon from '../../../public/eye-solid.svg';
 import { useState, useEffect } from "react";
 import Link from "next/link";
-export default function Login() {
+export default function Signup() {
     const [isShowed, setIsShowed] = useState<boolean>(false);
     return (
         <main className="w-full h-[100vh] flex items-center py-[64px] pl-[64px] overflow-hidden">
