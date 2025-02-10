@@ -13,6 +13,7 @@ export default function Login() {
     const [isShowed, setIsShowed] = useState<boolean>(false);
     return (
         <main className="w-full h-[100vh] flex items-center py-[64px] pl-[64px] overflow-hidden">
+          <title>Share box | Login</title>
           <section className="w-[50%] h-[650px] bg-imageBackground relative rounded-2xl">
             <Image 
               src={loginImage}
