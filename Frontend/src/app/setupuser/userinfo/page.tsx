@@ -1,6 +1,6 @@
 import Image from "next/image";
-import CameraIcon from "../../../public/camera-solid.svg";
-import ArrowIcon from "../../../public/arrow-right-solid.svg";
+import CameraIcon from "../../../../public/camera-solid.svg";
+import ArrowIcon from "../../../../public/arrow-right-solid.svg";
 import Link from "next/link";
 export default function UserInfo() {
     return (

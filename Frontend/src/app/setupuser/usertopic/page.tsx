@@ -1,13 +1,13 @@
 'use client'
 import Image from "next/image";
-import ArrowIcon from "../../../public/arrow-right-solid.svg";
-import MusicImage from "../../../public/music_image.svg";
-import GameImage from "../../../public/game_image.svg";
-import AnimeImage from "../../../public/anime_image.svg";
-import MovieImage from "../../../public/movie_image.svg";
-import MangaImage from "../../../public/manga_image.svg";
-import SportImage from "../../../public/sport_image.svg";
-import CheckIcon from "../../../public/check-solid.svg";
+import ArrowIcon from "../../../../public/arrow-right-solid.svg";
+import MusicImage from "../../../../public/music_image.svg";
+import GameImage from "../../../../public/game_image.svg";
+import AnimeImage from "../../../../public/anime_image.svg";
+import MovieImage from "../../../../public/movie_image.svg";
+import MangaImage from "../../../../public/manga_image.svg";
+import SportImage from "../../../../public/sport_image.svg";
+import CheckIcon from "../../../../public/check-solid.svg";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 export default function UserTopic() {

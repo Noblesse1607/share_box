@@ -1,12 +1,12 @@
 import Image from "next/image";
-import Image1 from "../../public/setup_1.svg";
-import Image2 from "../../public/setup_2.svg";
-import Image3 from "../../public/setup_3.svg";
-import Image4 from "../../public/setup_4.svg";
-import Image5 from "../../public/setup_5.svg";
-import Image6 from "../../public/setup_6.svg";
-import Image7 from "../../public/setup_7.svg";
-import Image8 from "../../public/setup_8.svg";
+import Image1 from "../../../public/setup_1.svg";
+import Image2 from "../../../public/setup_2.svg";
+import Image3 from "../../../public/setup_3.svg";
+import Image4 from "../../../public/setup_4.svg";
+import Image5 from "../../../public/setup_5.svg";
+import Image6 from "../../../public/setup_6.svg";
+import Image7 from "../../../public/setup_7.svg";
+import Image8 from "../../../public/setup_8.svg";
 export default function SetUpUserLayout({ children } : Readonly<{
     children: React.ReactNode;
   }>) {

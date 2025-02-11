@@ -1,4 +1,5 @@
 'use client'
+
 import Image from "next/image";
 import signupImage from '../../../public/signup_image.svg';
 import signupImage2 from '../../../public/signup_image_2.svg';
