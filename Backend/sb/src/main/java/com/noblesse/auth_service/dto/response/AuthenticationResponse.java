@@ -1,5 +1,6 @@
 package com.noblesse.auth_service.dto.response;
 
+import com.noblesse.auth_service.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,5 +13,6 @@ public class AuthenticationResponse {
 
     String token;
     boolean authenticated;
+    User user;
 
 }

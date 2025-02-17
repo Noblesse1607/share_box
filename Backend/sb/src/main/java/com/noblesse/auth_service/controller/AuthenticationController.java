@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
