@@ -10,7 +10,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-      <div className="w-full h-[100vh] bg-red-400">
+      <div className="w-full h-[100vh] bg-purple-400">
     </div>
   );
 }

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.noblesse</groupId>
-	<artifactId>auth-service</artifactId>
+	<artifactId>sb</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>auth-service</name>
 	<description>Auth Service</description>
