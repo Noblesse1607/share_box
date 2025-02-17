@@ -118,7 +118,6 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setUsername(request.getUsername());
         user.setUserEmail(request.getUserEmail());
-        user.setPassword(request.getPassword());
 
         return userRepository.save(user);
     }

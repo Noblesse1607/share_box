@@ -62,7 +62,7 @@ export default function Login() {
           const res = await axios.post(
             `http://localhost:8080/sharebox/auth/login`,
             {
-              "userEmail": data.email,
+              "email": data.email,
               "password": data.password
             }
           )    
