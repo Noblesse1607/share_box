@@ -117,7 +117,7 @@ public class UserService {
     public User updateUser(Long userId, RegisterRequest request) throws IOException, SQLException {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setUsername(request.getUsername());
-        user.setUserEmail(request.getUserEmail());
+        //user.setUserEmail(request.getUserEmail());
 
         return userRepository.save(user);
     }
