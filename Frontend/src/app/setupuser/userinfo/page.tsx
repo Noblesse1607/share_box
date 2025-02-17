@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
 import CameraIcon from "../../../../public/camera-solid.svg";
-import LoadingIcon from "../../../public/spinner-solid.svg";
+import LoadingIcon from "../../../../public/spinner-solid.svg";
 import ArrowIcon from "../../../../public/arrow-right-solid.svg";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -48,7 +48,7 @@ export default function UserInfo() {
         formData.append("avatar", file);
         setIsLoading(true);
         const res = await axios.post(
-            `http://localhost:8080/authentication/users/${user.userId}/upload-avatar`,
+            `http://localhost:8080/sharebox/users/${user.userId}/upload-avatar`,
             formData
         )
         

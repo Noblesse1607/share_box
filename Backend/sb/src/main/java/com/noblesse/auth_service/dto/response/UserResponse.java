@@ -19,6 +19,7 @@ public class UserResponse {
     String username;
     String userEmail;
     String status;
+    String avatar;
     Set<String> roles;
     List<Topic> userTopics;
     Boolean online;

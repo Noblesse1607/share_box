@@ -1,5 +1,6 @@
 package com.noblesse.auth_service.controller;
 
+import com.noblesse.auth_service.dto.request.AvatarRequest;
 import com.noblesse.auth_service.dto.request.GoogleLoginRequest;
 import com.noblesse.auth_service.dto.request.RegisterRequest;
 import com.noblesse.auth_service.dto.request.UserAddTopicRequest;
@@ -11,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +30,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/register")
-    public ApiResponse<UserResponse> createUser(@RequestBody RegisterRequest request){
+    public ApiResponse<UserResponse> createUser(@ModelAttribute RegisterRequest request){
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();
@@ -66,6 +68,20 @@ public class UserController {
         return ApiResponse.<UserResponse>builder()
                 .result(response)
                 .build();
+    }
+
+    @PostMapping("/{userId}/upload-avatar")
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long userId, @ModelAttribute AvatarRequest request){
+        try {
+            byte[] avatarData = request.getAvatar().getBytes();
+            String avatarUrl = userService.uploadAvatar(avatarData,userId,request.getAvatar().getOriginalFilename());
+
+            userService.savedUser(userId,avatarUrl);
+
+            return ResponseEntity.ok("User registered successfully with avatar URL: " + avatarUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+        }
     }
 
     @GetMapping("/all")

@@ -121,7 +121,7 @@ export default function Login() {
               formData.append("username", userInfoRes.data.name);
               formData.append("avatar", userInfoRes.data.picture);
               const res = await axios.post(
-                "http://localhost:8080/authentication/users/google/login",
+                "http://localhost:8080/sharebox/users/google/login",
                 formData
               )
               if (res.data.result) {

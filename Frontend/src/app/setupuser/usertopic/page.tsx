@@ -56,7 +56,7 @@ export default function UserTopic() {
               setShowMessage(true);
         } else {
             const res = await axios.post(
-                `http://localhost:8080/authentication/users/${user.userId}/select-topics`,
+                `http://localhost:8080/sharebox/users/${user.userId}/select-topics`,
                 {
                     "topicsId": topicList
                 }

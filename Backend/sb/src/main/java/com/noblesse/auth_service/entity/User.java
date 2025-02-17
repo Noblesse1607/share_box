@@ -62,6 +62,8 @@ public class User {
         response.setRoles(roles);
         response.setUserTopics(topics);
         response.setOnline(online);
+        response.setAvatar(avatar);
+        response.setStatus(status);
         response.setCreateAt(createAt);
 
         return response;
