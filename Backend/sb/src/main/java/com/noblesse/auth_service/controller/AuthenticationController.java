@@ -1,7 +1,7 @@
 package com.noblesse.auth_service.controller;
 
 import com.nimbusds.jose.JOSEException;
-import com.noblesse.auth_service.dto.request.AuthenticationRequest;
+import com.noblesse.auth_service.dto.request.LoginRequest;
 import com.noblesse.auth_service.dto.request.IntrospectRequest;
 import com.noblesse.auth_service.dto.request.LogoutRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
@@ -27,9 +27,9 @@ public class AuthenticationController {
     AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    ApiResponse<AuthenticationResponse> loginAccount(@RequestBody AuthenticationRequest request) {
+    ApiResponse<AuthenticationResponse> loginAccount(@RequestBody LoginRequest request) {
 
-        var result = authenticationService.authenticate(request);
+        var result = authenticationService.loginAccount(request);
 
         return ApiResponse.<AuthenticationResponse>builder()
                 .result(result)

@@ -1,6 +1,6 @@
 package com.noblesse.auth_service.controller;
 
-import com.noblesse.auth_service.dto.request.UserCreationRequest;
+import com.noblesse.auth_service.dto.request.RegisterRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.UserResponse;
 import com.noblesse.auth_service.service.UserService;
@@ -23,7 +23,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/register")
-    public ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request){
+    public ApiResponse<UserResponse> createUser(@RequestBody RegisterRequest request){
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
                 .build();

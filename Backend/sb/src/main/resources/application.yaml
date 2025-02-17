@@ -1,13 +1,13 @@
 server:
   port: 8080
   servlet:
-    context-path: /auth
+    context-path: /sb
 
 spring:
   application:
-    name: auth-service
+    name: share_box
   datasource:
-    url: "jdbc:mysql://localhost:3306/auth_service"
+    url: "jdbc:mysql://localhost:3306/sharebox_db"
     driverClassName: "com.mysql.cj.jdbc.Driver"
     username: root
     password: root

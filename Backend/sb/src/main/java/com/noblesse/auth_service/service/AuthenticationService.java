@@ -5,10 +5,9 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.noblesse.auth_service.dto.request.AuthenticationRequest;
+import com.noblesse.auth_service.dto.request.LoginRequest;
 import com.noblesse.auth_service.dto.request.IntrospectRequest;
 import com.noblesse.auth_service.dto.request.LogoutRequest;
-import com.noblesse.auth_service.dto.request.RefreshRequest;
 import com.noblesse.auth_service.dto.response.AuthenticationResponse;
 import com.noblesse.auth_service.dto.response.IntrospectResponse;
 import com.noblesse.auth_service.entity.InvalidatedToken;
@@ -57,7 +56,7 @@ public class AuthenticationService {
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request){
+    public AuthenticationResponse loginAccount(LoginRequest request){
         var user = userRepository.findByUserEmail(request.getEmail())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
