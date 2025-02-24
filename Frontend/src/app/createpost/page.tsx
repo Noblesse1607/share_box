@@ -2,8 +2,8 @@
 
 import DropdownIcon from "../../../public/angle-up-solid-black.svg";
 import UserGroup from "../../../public/user-group-solid.svg";
-import ImageIcon from "@/public/camera-solid.svg";
-import VideoIcon from "@/public/clapperboard-solid.svg";
+import ImageIcon from "../../../public/camera-solid.svg";
+import VideoIcon from "../../../public/clapperboard-solid.svg";
 
 import MainLayout from "@/components/mainLayout";
 import { AddTopicDropdown } from "@/components/topicDropdown";

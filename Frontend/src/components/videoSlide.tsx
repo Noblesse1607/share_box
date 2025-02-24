@@ -1,4 +1,4 @@
-import VideoIcon from "@/public/clapperboard-solid-gray.svg";
+import VideoIcon from "../../public/clapperboard-solid-gray.svg";
 import Image from "next/image";
 import VideoCard from "./videoCard";
 

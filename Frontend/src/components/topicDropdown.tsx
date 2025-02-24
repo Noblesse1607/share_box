@@ -1,7 +1,7 @@
 'use client'
 
 import { Anime, Game, Manga, Movie, Music, Sport } from "@/components/topics";
-import Plus from "../../../public/plus-solid-gray.svg"
+import Plus from "../../public/plus-solid-gray.svg"
 import Image from "next/image";
 
 import { SetStateAction, useRef } from "react";

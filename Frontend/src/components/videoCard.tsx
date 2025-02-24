@@ -1,4 +1,4 @@
-import TrashIcon from "@/public/trash-solid.svg";
+import TrashIcon from "../../public/trash-solid.svg";
 import Image from "next/image";
 
 export default function VideoCard({ url, handleDelete } : { url: string, handleDelete: (url: string) => void }) {

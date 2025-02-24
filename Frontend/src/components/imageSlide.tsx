@@ -1,4 +1,4 @@
-import ImageIcon from "@/public/camera-solid-gray.svg";
+import ImageIcon from "../../public/camera-solid.svg";
 import Image from "next/image";
 import ImageCard from "./imageCard";
 
