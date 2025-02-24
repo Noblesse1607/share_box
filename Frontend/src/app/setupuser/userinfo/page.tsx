@@ -7,13 +7,16 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
+
 export default function UserInfo() {
     const router = useRouter();
     const userString = sessionStorage.getItem("user");
     const user = userString ? JSON.parse(userString) : {};
+
     const [avatar, setAvatar] = useState<string>(user.avatar);
     const [username, setUsername] = useState<string>(user.username);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const handleChange = (e: any) => {
         const newUsername = e.target.value;
         setUsername(newUsername);

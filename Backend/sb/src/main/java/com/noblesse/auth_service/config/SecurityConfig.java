@@ -46,9 +46,10 @@ public class SecurityConfig {
                     cors.configurationSource(corsConfigurationSource());
                 })
                 .authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/google/login", "/users/{userId}/upload-avatar").permitAll()
+                request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/google/login", "/users/{userId}/upload-avatar", "/post/create-post/{userId}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/users/delete/{userId}", "/topic/delete/{topicId}").permitAll()
                         //.requestMatchers(HttpMethod.GET, "/users/all").hasAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**","/post/get-post/{userId}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/update/{userId}").permitAll()
                         .anyRequest().authenticated());
 
