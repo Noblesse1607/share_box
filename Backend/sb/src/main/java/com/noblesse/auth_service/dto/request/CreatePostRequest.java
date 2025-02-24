@@ -19,4 +19,5 @@ public class CreatePostRequest {
     String content;
     List<MultipartFile> media;
 
+
 }

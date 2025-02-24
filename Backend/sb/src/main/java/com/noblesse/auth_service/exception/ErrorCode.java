@@ -16,7 +16,8 @@ public enum ErrorCode {
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     USER_NOT_FOUND(1009, "User not found", HttpStatus.UNAUTHORIZED),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
-    TOPIC_NOT_FOUND(1011, "Topic not found", HttpStatus.UNAUTHORIZED)
+    TOPIC_NOT_FOUND(1011, "Topic not found", HttpStatus.UNAUTHORIZED),
+    POST_NOT_FOUND(1012, "Post not found", HttpStatus.NOT_FOUND)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
