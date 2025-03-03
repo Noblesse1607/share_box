@@ -16,7 +16,7 @@ export default function Home() {
           <title>Home</title>
             <div>
 
-                
+             {user.username}
             </div>
         </main>
       </MainLayout>   

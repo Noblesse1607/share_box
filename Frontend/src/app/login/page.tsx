@@ -115,6 +115,7 @@ export default function Login() {
           });
           //console.log(userInfoRes.data);
           if (userInfoRes.data) {
+            console.log(userInfoRes);
             try {
               const formData = new FormData();
               formData.append("email", userInfoRes.data.email);

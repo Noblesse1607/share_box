@@ -67,7 +67,7 @@
     100% { transform: translateX(0%); }
   }
   .slider {
-    transform: translateX(100%);
+    transform: translateX(24px);
     animation: slide-in 0.3s forwards;
   }
   .active {
