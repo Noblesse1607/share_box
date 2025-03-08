@@ -27,3 +27,16 @@ export function authValid(data: any) {
     
     return error;
 }
+
+export const emailValid = (email: string): string => {
+    if (!email) {
+      return "Email is required";
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Invalid email format";
+    }
+    
+    return "";
+  };

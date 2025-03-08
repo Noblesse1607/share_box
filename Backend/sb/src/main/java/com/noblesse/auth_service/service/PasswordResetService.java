@@ -14,6 +14,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -36,6 +37,7 @@ public class PasswordResetService {
 
     private static final int EXPIRATION_MINUTES = 15;
 
+    @Transactional
     public boolean generateAndSendVerificationCode(String email) {
         // Find user by email
         Optional<User> userOptional = userRepository.findByUserEmail(email);
