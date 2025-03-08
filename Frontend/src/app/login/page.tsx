@@ -226,11 +226,11 @@ export default function Login() {
                     }
                   </div>
                 </div>
-                {/* <div className="mt-2 w-full flex justify-end">
+                <div className="mt-2 w-full flex justify-end">
                    <Link href="/forgot-password" className="text-textGrayColor1 hover:underline underline-offset-4 text-sm font-semibold">
                        Forgot Password ?
                    </Link>
-                </div> */}
+                </div>
               </div>
               {errors.password && 
                 <div className="ml-7 mt-2 -mb-4 flex gap-2 items-center">
