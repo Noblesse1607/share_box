@@ -4,12 +4,21 @@ import com.noblesse.auth_service.dto.request.CreatePostRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.PostResponse;
 import com.noblesse.auth_service.service.PostService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
 
+@RestController
+@RequestMapping("/post")
+@RequiredArgsConstructor
+@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PostController {
 
     PostService postService;

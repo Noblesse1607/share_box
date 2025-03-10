@@ -156,7 +156,7 @@ export default function CreatePost() {
             
             setFetching(true);
             const res = await axios.post(
-                `http://localhost:8080/authentication/post/create-post/${user.userId}`,
+                `http://localhost:8080/sharebox/post/create-post/${user.userId}`,
                 formData
             )
             setFetching(false);
