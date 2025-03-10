@@ -36,13 +36,10 @@ public class Post {
 
     List<String> media;
 
+    int voteCount = 0;
 
-    int upvotes = 0;
-    int downvotes = 0;
-
-    public int getScore() {
-        return upvotes - downvotes;
-    }
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Vote> votes;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
@@ -64,9 +61,7 @@ public class Post {
         createPostResponse.setContent(content);
         createPostResponse.setMedia(media);
         createPostResponse.setTitle(title);
-        createPostResponse.setUpvotes(upvotes);
-        createPostResponse.setDownvotes(downvotes);
-        createPostResponse.setScore(getScore());
+        createPostResponse.setVoteCount(voteCount);
         createPostResponse.setCreateAt(createAt);
 
         return createPostResponse;
