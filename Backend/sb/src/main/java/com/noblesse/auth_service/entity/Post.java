@@ -57,6 +57,9 @@ public class Post {
     public PostResponse toPostResponse(){
         PostResponse createPostResponse = new PostResponse();
         createPostResponse.setPostId(id);
+        createPostResponse.setUserId(user.getUserId());
+        createPostResponse.setUserAvatar(user.getAvatar());
+        createPostResponse.setUsername(user.getUsername());
         createPostResponse.setPostTopics(postTopic);
         createPostResponse.setContent(content);
         createPostResponse.setMedia(media);
