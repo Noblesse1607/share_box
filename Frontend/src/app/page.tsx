@@ -20,6 +20,7 @@ export default function Home() {
        const res = await axios.get(`http://localhost:8080/sharebox/post/recommend-posts/${user.userId}`)
        setFetching(false);
        if (res.data.result) {
+         console.log(res.data.result);
          setPosts(res.data.result.reverse());
        }
      }
@@ -60,18 +61,16 @@ export default function Home() {
      }, [topic]) 
     return (
       <MainLayout>
-        <main className="w-full">
+        <main className="w-full p-4">
           <title>Home</title>
-          <div className="p-4">
-               <div className="w-[70%] h-[60px] border-b border-b-lineColor">
-                 <ChooseTopicDropdown topic={topic} setTopic={setTopic} />
-               </div>
-               <div className="w-[70%]">
-                 {posts && posts.map((post: any) => {
-                   return <PostCard key={post.postId} data={post}/>
-                 })}
-               </div>
-            </div>
+          <div className="w-[70%] h-[60px] border-b border-b-lineColor">
+             <ChooseTopicDropdown topic={topic} setTopic={setTopic} />
+           </div>
+           <div className="w-[70%]">
+             {posts && posts.map((post: any) => {
+               return <PostCard key={post.postId} data={post} canNavigate/>
+             })}
+           </div>
         </main>
       </MainLayout>   
     );
