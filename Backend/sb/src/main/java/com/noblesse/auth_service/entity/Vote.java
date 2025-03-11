@@ -1,5 +1,6 @@
 package com.noblesse.auth_service.entity;
 
+import com.noblesse.auth_service.dto.response.VoteResponse;
 import com.noblesse.auth_service.enums.VoteType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,5 +29,13 @@ public class Vote {
 
     @Enumerated(EnumType.STRING)
     VoteType voteType;
+
+
+    public VoteResponse toVoteResponse(){
+        VoteResponse voteResponse = new VoteResponse();
+        voteResponse.setVoteType(voteType);
+
+        return voteResponse;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.noblesse.auth_service.service;
 
+import com.noblesse.auth_service.dto.response.VoteResponse;
 import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.entity.Vote;
@@ -60,5 +61,23 @@ public class VoteService {
         }
 
         postRepository.save(post);
+    }
+
+    public VoteResponse findUserVote(Long userId, Long postId) {
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Vote vote = voteRepository.findByPostIdAndUserId(postId, userId);
+
+        if (vote == null) {
+            return VoteResponse.builder().voteType(null).build();
+        }
+
+        return vote.toVoteResponse();
+
     }
 }

@@ -49,7 +49,7 @@ public class SecurityConfig {
                 request.requestMatchers(HttpMethod.POST, "/users/register","/users/{userId}/select-topics", "/auth/login", "/auth/introspect", "/auth/logout", "/topic/**", "/users/google/login", "/users/{userId}/upload-avatar", "/post/create-post/{userId}", "/comment/create/{userId}/{postId}", "/vote/{userId}/{postId}", "/forgot-password/request", "/forgot-password/verify", "/forgot-password/reset").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/users/delete/{userId}", "/topic/delete/{topicId}").permitAll()
                         //.requestMatchers(HttpMethod.GET, "/users/all").hasAuthority(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**","/post/get-post/{userId}", "/post/{topicId}", "/post/get/{postId}", "/post/{postId}/score", "/post/posts", "/post/recommend-posts/{userId}", "/post/{postId}/upvote", "/post/{postId}/downvote").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/topic/**", "/user-avatars/**", "/images/**","/post/get-post/{userId}", "/post/{topicId}", "/post/get/{postId}", "/post/{postId}/score", "/post/posts", "/post/recommend-posts/{userId}", "/post/{postId}/upvote", "/post/{postId}/downvote", "/vote/type/{userId}/{postId}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/update/{userId}").permitAll()
                         .anyRequest().authenticated());
 
