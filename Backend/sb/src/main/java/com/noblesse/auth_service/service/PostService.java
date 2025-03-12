@@ -70,6 +70,12 @@ public class PostService {
         return savedPost.toPostResponse();
     }
 
+    public List<PostResponse> getAllPosts(){
+        List<Post> posts = postRepository.findAll();
+
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
     public String uploadPostMedia(MultipartFile file, Long userId, Long postId) throws  IOException {
 
         String url = supabaseUrl + "post-media/" + userId + "/" + postId + "/" + file.getOriginalFilename();

@@ -79,4 +79,11 @@ public class PostController {
                 .build();
     }
 
+    @GetMapping("/all-posts")
+    public ApiResponse<List<PostResponse>> gtAllPosts(){
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(postService.getAllPosts())
+                .build();
+    }
+
 }
