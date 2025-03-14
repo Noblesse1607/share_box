@@ -19,7 +19,7 @@
      const router = useRouter();
      const { postId } = params;
      const [post, setPost] = useState<any>(null);
- 
+     
      const handleNavigate = () => {
          router.back();
      }

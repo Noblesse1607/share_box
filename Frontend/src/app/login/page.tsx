@@ -13,7 +13,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ToastMessage from "../../components/toastMessage";
 import { authValid } from "../../../validation/validation";
-import { log } from "console";
 import axios from "axios";
 export default function Login() {
     const router = useRouter();
@@ -72,7 +71,9 @@ export default function Login() {
               ...res.data.result.user,
               token: res.data.result.token
             })
+            const recent: any[] = [];
             sessionStorage.setItem("user", JSON.stringify(user));
+            sessionStorage.setItem("recent", JSON.stringify(recent));
             setMessage({
               type: "success",
               message: "Successfully logined!",
@@ -115,7 +116,7 @@ export default function Login() {
           });
           //console.log(userInfoRes.data);
           if (userInfoRes.data) {
-            console.log(userInfoRes);
+            //console.log(userInfoRes);
             try {
               const formData = new FormData();
               formData.append("email", userInfoRes.data.email);
