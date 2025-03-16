@@ -80,7 +80,7 @@ public class PostController {
     }
 
     @GetMapping("/all-posts")
-    public ApiResponse<List<PostResponse>> gtAllPosts(){
+    public ApiResponse<List<PostResponse>> getAllPosts(){
         return ApiResponse.<List<PostResponse>>builder()
                 .result(postService.getAllPosts())
                 .build();

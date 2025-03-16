@@ -14,13 +14,10 @@ export default function Home() {
     const recentString = sessionStorage.getItem("recent");
     const recent = recentString ? JSON.parse(recentString) : []; 
     const [topic, setTopic] = useState<string>("0");
-    const [fetching, setFetching] = useState<boolean>(false);
     const [posts, setPosts] = useState([]);
  
      const getRecommendPost = async () => {
-       setFetching(true);
        const res = await axios.get(`http://localhost:8080/sharebox/post/recommend-posts/${user.userId}`)
-       setFetching(false);
        if (res.data.result) {
          console.log(res.data.result);
          setPosts(res.data.result.reverse());
@@ -28,9 +25,7 @@ export default function Home() {
      }
  
      const getPostByTopic = async (topicId: string) => {
-       setFetching(true);
        const res = await axios.get(`http://localhost:8080/sharebox/post/${topicId}`)
-       setFetching(false);
        if (res.data.result) {
          setPosts(res.data.result.reverse());
        }
