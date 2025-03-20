@@ -1,6 +1,7 @@
 package com.noblesse.auth_service.controller;
 
 import com.noblesse.auth_service.dto.request.CreatePostRequest;
+import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.PostResponse;
 import com.noblesse.auth_service.service.PostService;
@@ -23,10 +24,10 @@ public class PostController {
 
     PostService postService;
 
-    @PostMapping("/create-post/{userId}")
-    public ApiResponse<PostResponse> createPost(@ModelAttribute CreatePostRequest request, @PathVariable Long userId) throws IOException {
+    @PostMapping("/create-post/{userId}/{communityId}")
+    public ApiResponse<PostResponse> createPost(@ModelAttribute CreatePostRequest request, @PathVariable Long userId, @PathVariable Long communityId) throws IOException {
         return ApiResponse.<PostResponse>builder()
-                .result(postService.createPost(request, userId))
+                .result(postService.createPost(request, userId, communityId))
                 .build();
     }
 
@@ -83,6 +84,20 @@ public class PostController {
     public ApiResponse<List<PostResponse>> getAllPosts(){
         return ApiResponse.<List<PostResponse>>builder()
                 .result(postService.getAllPosts())
+                .build();
+    }
+
+    @GetMapping("/community/{communityId}")
+    public ApiResponse<List<PostResponse>> getPostsByCommunity(@PathVariable Long communityId){
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(postService.getPostsByCommunity(communityId))
+                .build();
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<List<PostResponse>> searchPosts(@RequestBody SearchRequest request){
+        return ApiResponse.<List<PostResponse>>builder()
+                .result(postService.searchPosts(request))
                 .build();
     }
 

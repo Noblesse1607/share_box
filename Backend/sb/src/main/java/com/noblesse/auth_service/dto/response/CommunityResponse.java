@@ -1,7 +1,7 @@
 package com.noblesse.auth_service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.noblesse.auth_service.entity.Topic;
+import com.noblesse.auth_service.entity.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,20 +13,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PostResponse {
-
-    Long postId;
+public class CommunityResponse {
     Long communityId;
-    String title;
-    List<Topic> postTopics;
-    String content;
-    List<String> media;
-    Long userId;
-    String userAvatar;
-    String username;
-    int voteCount;
+
+    String name;
+
+    String description;
+
+    String avatar;
+
+    String backgroundImg;
+
+    Long ownerId;
+
+    List<User> members;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;
-
 }

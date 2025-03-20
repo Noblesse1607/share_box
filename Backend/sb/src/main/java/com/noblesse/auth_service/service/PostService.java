@@ -1,11 +1,14 @@
 package com.noblesse.auth_service.service;
 
 import com.noblesse.auth_service.dto.request.CreatePostRequest;
+import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.response.PostResponse;
+import com.noblesse.auth_service.entity.Community;
 import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.exception.AppException;
 import com.noblesse.auth_service.exception.ErrorCode;
+import com.noblesse.auth_service.repository.CommunityRepository;
 import com.noblesse.auth_service.repository.PostRepository;
 import com.noblesse.auth_service.repository.UserRepository;
 import com.noblesse.auth_service.repository.VoteRepository;
@@ -40,16 +43,28 @@ public class PostService {
 
     VoteRepository voteRepository;
 
+    CommunityRepository communityRepository;
+
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
 
-    public PostResponse createPost(CreatePostRequest request, Long userId) throws IOException {
+    public PostResponse createPost(CreatePostRequest request, Long userId, Long communityId) throws IOException {
+
+        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        if (!community.getMembers().contains(user)) {
+            throw new AppException(ErrorCode.USER_NOT_MEMBER_OF_COMMUNITY);
+        }
+
         Post post = new Post();
+        post.setCommunity(community);
         post.setPostTopic(request.getPostTopics());
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         post.setUser(user);
 
         Post savedPost = postRepository.save(post);
@@ -68,6 +83,16 @@ public class PostService {
         postRepository.save(savedPost);
 
         return savedPost.toPostResponse();
+    }
+
+    public List<PostResponse> getPostsByCommunity(Long communityId){
+        List<Post> posts = postRepository.getPostByCommunity(communityId);
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
+    }
+
+    public List<PostResponse> searchPosts(SearchRequest request) {
+        List<Post> posts = postRepository.findByNameContainingIgnoreCase(request);
+        return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
     }
 
     public List<PostResponse> getAllPosts(){

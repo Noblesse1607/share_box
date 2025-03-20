@@ -18,7 +18,12 @@ public enum ErrorCode {
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     TOPIC_NOT_FOUND(1011, "Topic not found", HttpStatus.UNAUTHORIZED),
     POST_NOT_FOUND(1012, "Post not found", HttpStatus.NOT_FOUND),
-    COMMENT_NOT_FOUND(1014, "Comment not found", HttpStatus.NOT_FOUND)
+    COMMENT_NOT_FOUND(1014, "Comment not found", HttpStatus.NOT_FOUND),
+    COMMUNITY_NOT_FOUND(1015, "Community not found", HttpStatus.NOT_FOUND),
+    USER_NOT_MEMBER_OF_COMMUNITY(1016, "User not member in community", HttpStatus.NOT_FOUND),
+    USER_ALREADY_MEMBER_OF_COMMUNITY(1017, "User existed in community", HttpStatus.BAD_REQUEST),
+    CUSTOMFEED_NOT_FOUND(1015, "Customfeed not found", HttpStatus.NOT_FOUND),
+    COMMUNITY_ALREADY_EXISTS_IN_FEED(1016, "Community already exists in feed", HttpStatus.BAD_REQUEST)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
