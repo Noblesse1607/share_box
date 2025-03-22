@@ -2,6 +2,7 @@
 import Header from "../components/header";
 import Navbar from "../components/navbar";
 import { useRouter } from "next/navigation";
+import AiChat from "./chatAI";
 export default function MainLayout ({
     children,
   }: Readonly<{
@@ -22,6 +23,7 @@ export default function MainLayout ({
                     {children}
                 </div>
             </div>
+            <AiChat />
         </main>
     )
 }

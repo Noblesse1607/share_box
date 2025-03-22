@@ -17,7 +17,7 @@ public class GeminiController {
 
     GeminiService geminiService;
 
-    @GetMapping("/ask")
+    @PostMapping("/ask")
     public ResponseEntity<String> generateContentGet(@RequestBody String prompt) {
         log.info("Received GET request to generate content with prompt: {}", prompt);
         String response = geminiService.callGemini(prompt);
