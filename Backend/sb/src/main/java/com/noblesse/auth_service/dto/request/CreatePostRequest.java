@@ -18,6 +18,7 @@ public class CreatePostRequest {
     List<Topic> postTopics;
     String content;
     List<MultipartFile> media;
+    Long communityId;
 
 
 }

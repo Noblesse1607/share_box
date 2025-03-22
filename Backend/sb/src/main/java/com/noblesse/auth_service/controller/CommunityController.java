@@ -47,6 +47,20 @@ public class CommunityController {
         }
     }
 
+    @GetMapping("/{communityId}")
+    public ApiResponse<CommunityResponse> getCommunityById(@PathVariable Long communityId){
+        return ApiResponse.<CommunityResponse>builder()
+                .result(communityService.getCommunityById(communityId))
+                .build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public ApiResponse<List<CommunityResponse>> getUserCommunities(@PathVariable Long userId){
+        return ApiResponse.<List<CommunityResponse>>builder()
+                .result(communityService.userJoinCommunities(userId))
+                .build();
+    }
+
     @PostMapping("/{communityId}/upload-background")
     public ResponseEntity<String> uploadBackground(@PathVariable Long communityId, @ModelAttribute BackgroundImgRequest request){
         try {

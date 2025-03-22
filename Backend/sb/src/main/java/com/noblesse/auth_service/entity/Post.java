@@ -59,7 +59,7 @@ public class Post {
         PostResponse createPostResponse = new PostResponse();
         createPostResponse.setPostId(id);
         createPostResponse.setUserId(user.getUserId());
-        createPostResponse.setCommunityId(community.getId());
+        createPostResponse.setCommunityId(community != null ? community.getId() : null);
         createPostResponse.setUserAvatar(user.getAvatar());
         createPostResponse.setUsername(user.getUsername());
         createPostResponse.setPostTopics(postTopic);

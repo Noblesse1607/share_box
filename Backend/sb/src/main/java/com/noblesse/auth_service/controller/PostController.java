@@ -24,10 +24,10 @@ public class PostController {
 
     PostService postService;
 
-    @PostMapping("/create-post/{userId}/{communityId}")
-    public ApiResponse<PostResponse> createPost(@ModelAttribute CreatePostRequest request, @PathVariable Long userId, @PathVariable Long communityId) throws IOException {
+    @PostMapping("/create-post/{userId}")
+    public ApiResponse<PostResponse> createPost(@ModelAttribute CreatePostRequest request, @PathVariable Long userId) throws IOException {
         return ApiResponse.<PostResponse>builder()
-                .result(postService.createPost(request, userId, communityId))
+                .result(postService.createPost(request, userId))
                 .build();
     }
 

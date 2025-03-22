@@ -17,6 +17,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,14 @@ public class CommunityService {
                 .description(request.getDescription())
                 .owner(user)
                 .build();
+
+        community.setMembers(new ArrayList<>());
+        community.getMembers().add(user);
+
+        if (user.getCommunities() == null) {
+            user.setCommunities(new ArrayList<>());
+        }
+        user.getCommunities().add(community);
 
         communityRepository.save(community);
 
@@ -108,6 +117,16 @@ public class CommunityService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload avatar: " + e.getMessage());
         }
+    }
+
+    public CommunityResponse getCommunityById(Long communityId){
+        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+        return community.toCommunityResponse();
+    }
+
+    public List<CommunityResponse> userJoinCommunities(Long userId){
+        List<Community> communities = communityRepository.findUserCommunities(userId);
+        return communities.stream().map(Community::toCommunityResponse).collect(Collectors.toList());
     }
 
     public List<CommunityResponse> searchCommunities(SearchRequest request) {
