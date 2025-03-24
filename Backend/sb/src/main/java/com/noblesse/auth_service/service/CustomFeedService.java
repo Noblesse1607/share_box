@@ -70,6 +70,12 @@ public class CustomFeedService {
         return customFeed.toCustomFeedResponse();
     }
 
+    public CustomFeedResponse getFeedById(Long feedId) {
+        CustomFeed customFeed = customFeedRepository.findById(feedId).orElseThrow(() -> new AppException(ErrorCode.CUSTOMFEED_NOT_FOUND));
+
+        return customFeed.toCustomFeedResponse();
+    }
+
     public CustomFeedResponse removeCommunity(Long feedId, AddCommunityRequest request) {
         CustomFeed customFeed = customFeedRepository.findById(feedId)
                 .orElseThrow(() -> new AppException(ErrorCode.CUSTOMFEED_NOT_FOUND));

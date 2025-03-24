@@ -56,6 +56,13 @@ public class CustomFeedController {
                 .build();
     }
 
+    @GetMapping("/{feedId}")
+    public ApiResponse<CustomFeedResponse> getFeedById(@PathVariable Long feedId){
+        return ApiResponse.<CustomFeedResponse>builder()
+                .result(customFeedService.getFeedById(feedId))
+                .build();
+    }
+
     @GetMapping("/all")
     public ApiResponse<List<CustomFeedResponse>> getAllCustomFeeds(){
         return ApiResponse.<List<CustomFeedResponse>>builder()

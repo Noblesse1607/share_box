@@ -1,6 +1,7 @@
 package com.noblesse.auth_service.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.noblesse.auth_service.entity.Community;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,7 +22,7 @@ public class CustomFeedResponse {
 
     Long ownerId;
 
-    List<Long> communities;
+    List<Community> communities;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     LocalDateTime createAt;
