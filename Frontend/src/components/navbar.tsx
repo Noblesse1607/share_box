@@ -11,11 +11,13 @@ import PlusIcon from "../../public/plus-solid-black.svg";
 import AboutUsBlack from "../../public/parachute-box-solid-black.svg";
 import AboutUsWhite from "../../public/parachute-box-solid-white.svg";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 export default function Navbar() {
     const pathname = usePathname();
+    const router = useRouter();
     const home = useRef<HTMLAnchorElement>(null);
     const popular = useRef<HTMLAnchorElement>(null);
     const explore = useRef<HTMLAnchorElement>(null);
@@ -122,6 +124,7 @@ export default function Navbar() {
                         src={PlusIcon}
                         alt="Plus Icon"
                         className="w-[20px] hover:scale-[1.1] cursor-pointer"
+                        onClick={() => {router.push("/feed/create")}}
                     />
                     <p className="text-lg">Create a custom feeds</p>
                 </div>
@@ -149,6 +152,7 @@ export default function Navbar() {
                         src={PlusIcon}
                         alt="Plus Icon"
                         className="w-[20px] hover:scale-[1.1] cursor-pointer"
+                        onClick={() => {router.push("/community/create")}}
                     />
                     <p className="text-lg">Create a community</p>
                 </div>
