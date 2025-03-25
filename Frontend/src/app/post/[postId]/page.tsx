@@ -78,7 +78,7 @@ export default function PostPage() {
                         <Image src={NavigateIcon} alt="Navigate Icon" className="w-[20px]" />
                     </div>
                     <div className="w-[70%]">
-                        <PostCard data={post} canNavigate={false} />
+                        <PostCard data={post} canNavigate={false} isInCom={false}/>
                         <div id="myCmt" className="w-full h-[80px] p-4 flex items-center justify-between">
                             <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
                                 <img src={post?.userAvatar} alt="userAvatar" />
