@@ -83,11 +83,11 @@ const AiChat = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-4 left-4 z-50">
       {/* Chat toggle button */}
       <button
         onClick={toggleChat}
-        className="bg-mainColor hover:bg-mainColor text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg focus:outline-none"
+        className="bg-mainColor hover:bg-opacity-90 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg focus:outline-none transition-all duration-300"
         aria-label="Toggle chat"
       >
         {isOpen ? (
@@ -103,11 +103,11 @@ const AiChat = () => {
 
       {/* Chat widget */}
       {isOpen && (
-        <div className="absolute bottom-16 right-0 w-80 md:w-96 bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className="absolute bottom-16 left-0 w-80 md:w-96 bg-white rounded-lg shadow-xl overflow-hidden animate-slide-in-left">
           {/* Chat header */}
           <div className="bg-mainColor text-white p-4 flex justify-between items-center">
             <h3 className="font-medium">Share Box AI Assistant</h3>
-            <button onClick={toggleChat} className="text-white focus:outline-none" aria-label="Close chat">
+            <button onClick={toggleChat} className="text-white focus:outline-none hover:text-gray-200" aria-label="Close chat">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -119,7 +119,7 @@ const AiChat = () => {
             {messages.length === 0 ? (
               <div className="text-center text-gray-500 mt-10">
                 <p>How can I help you today?</p>
-                <p className="text-xs mt-2">Powered by Google Gemini</p>
+                <p className="text-xs mt-2">Powered by AI Assistant</p>
               </div>
             ) : (
               messages.map((message) => (
@@ -168,7 +168,7 @@ const AiChat = () => {
               />
               <button
                 type="submit"
-                className="bg-mainColor hover:bg-mainColor text-white px-4 py-2 rounded-r-lg focus:outline-none disabled:opacity-50"
+                className="bg-mainColor hover:bg-opacity-90 text-white px-4 py-2 rounded-r-lg focus:outline-none disabled:opacity-50 transition-all duration-300"
                 disabled={isLoading || !inputValue.trim()}
                 aria-label="Send message"
               >

@@ -9,6 +9,8 @@
  import LoadingIcon from "../../../../public/spinner-solid.svg";
  import CloseIcon from "../../../../public/xmark-solid-black.svg";
  import UserIcon from "../../../../public/user-solid-white.svg";
+ import ChatIcon from "../../../../public/comment-solid-white.svg";
+ import CancleReq from "../../../../public/user-large-slash-solid.svg";
  import axios from "axios";
  import Image from "next/image";
  import React from "react";
@@ -19,6 +21,8 @@
  import CustomFeedAccCard from "@/components/customFeedAccCard";
  import CommunityCard from "@/components/communityCard";
  import CustomFeedCard from "@/components/customFeedCard";
+ import websocketService from "@/websocket/websocket-service";
+ import { useFriendReqListContext } from "@/context/FriendReqContext";
  
  export default function AccountPage({ params }: {params: Promise<{ userId: string }>}) {
 
@@ -41,8 +45,13 @@
      const [favPost, setFavPost] = useState<any[]>([]);
      const [isLoading, setIsLoading] = useState<boolean>(false);
      const [activePart, setActivePart] = useState<string>("post");
+     const [isFriend, setIsFriend] = useState<"ACCEPTED" | "PENDING" | "REJECTED">("REJECTED");
+     const [reload, setReload] = useState<number>(0);
  
-     const handleLogout = () => {
+     const handleLogout = async() => {
+        await axios.post(
+            `http://localhost:8080/sharebox/users/offline/${user.userId}`
+        )
          sessionStorage.removeItem("user");
          router.push("/login");
      }
@@ -102,11 +111,26 @@
                  };
                  sessionStorage.setItem("user", JSON.stringify(updatedUser));
                  editBox.current?.classList.toggle("hidden");
+                 setReload(n=>n+1);
              }            
          } else {
              editBox.current?.classList.toggle("hidden");
          }
      }
+
+     const handleAddFriend = async() => {
+        setIsFriend("PENDING");
+        await axios.post(
+            `http://localhost:8080/sharebox/friend/request?requesterId=${user.userId}&receiverId=${userId}`
+        )
+    }
+
+    const handleCancleREquest = async() => {
+        setIsFriend("REJECTED");
+        await axios.post(
+            `http://localhost:8080/sharebox/friend/cancel-request?requesterId=${user.userId}&receiverId=${userId}`
+        )
+    }
  
      useEffect(() => {
          if (user.userId != userId) {
@@ -117,6 +141,32 @@
                  if (res.data.result) setData(res.data.result);
              }
              getUser();
+
+             const checkFriend = async() => {
+                const res = await axios.get(
+                    `http://localhost:8080/sharebox/friend/list?userId=${user.userId}`
+                )
+                if (res.data.result) {
+                    if (res.data.result.some((userFr: any) => userFr.userId.toString() === userId)) {
+                        setIsFriend("ACCEPTED");
+                    }
+                }
+            }
+            checkFriend();
+
+            const checkPending = async() => {
+                const res = await axios.get(
+                    `http://localhost:8080/sharebox/friend/pending?receiverId=${userId}`
+                )
+                if (res.data.result) {
+                    if (res.data.result.some((userFr: any) => userFr.userId === user.userId)) {
+                        console.log("im in ");
+                        
+                        setIsFriend("PENDING");
+                    } 
+                }
+            }
+            checkPending();
          }
  
          const getCommunityList = async() => {
@@ -152,7 +202,7 @@
             }
         }
         getFavPost();
-     }, [])
+     }, [reload])
  
      useEffect(() => {
          postRef.current?.classList.remove("active-part");
@@ -175,6 +225,20 @@
                  break;
          }
      }, [activePart])
+
+     useEffect(() => {
+        websocketService.subscribe(`/topic/friendReq/${user.userId}`, (message) => {
+            if (message == "ACCEPTED") {
+                setIsFriend("ACCEPTED");
+            } else if (message == "REJECTED") {
+                setIsFriend("REJECTED");
+            }
+        })
+
+        return () => {
+            websocketService.unsubscribe(`/topic/friendReq/${user.userId}`)
+        }
+    }, [])
  
      return (
          <MainLayout>
@@ -285,13 +349,32 @@
                                      </div>
                                  </>
                                  :
-                                 <div className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-voteDownColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
+                                 isFriend == "REJECTED" ? 
+                                 <div onClick={handleAddFriend} className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-voteDownColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
                                      <Image
                                          src={UserIcon}
                                          alt="User Icon"
                                          className="w-[12px]"
                                      />
                                      <p className="text-sm text-white">Add Friend</p>
+                                 </div>
+                                 : isFriend == "PENDING" ? 
+                                 <div onClick={handleCancleREquest} className="flex gap-2 w-[150px] h-[30px] items-center justify-center bg-mainColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
+                                     <Image
+                                         src={CancleReq}
+                                         alt="Cancle Request Icon"
+                                         className="w-[12px]"
+                                     />
+                                     <p className="text-sm text-white">Cancle Request</p>
+                                 </div>
+                                 :
+                                 <div className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-mainColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
+                                     <Image
+                                         src={ChatIcon}
+                                         alt="Chat Icon"
+                                         className="w-[12px]"
+                                     />
+                                     <p className="text-sm text-white">Message</p>
                                  </div>
                              }
                          </div>

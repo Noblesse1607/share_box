@@ -78,6 +78,13 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/user/{userId}")
+    public ApiResponse<UserResponse> getUserById(@PathVariable Long userId){
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUserById(userId))
+                .build();
+    }
+
     @PostMapping("/{userId}/upload-avatar")
     public ResponseEntity<String> uploadAvatar(@PathVariable Long userId, @ModelAttribute AvatarRequest request){
         try {

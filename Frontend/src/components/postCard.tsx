@@ -386,7 +386,7 @@
                      className="absolute top-8 left-8 w-[35px] hover:scale-[1.05] cursor-pointer z-50"
                      onClick={handleClick}
                  />
-                 <div className="relative w-full h-[80%] flex items-center justify-center">
+                 <div className="relative w-full h-[90%] flex items-center justify-center">
                      {imgIndex > 0 && 
                          <Image 
                              src={Arrow}
@@ -408,12 +408,12 @@
                          />
                      }
                  </div>
-                 <div className="w-full h-[20%] py-4 flex gap-6 items-center justify-center">
+                 <div className="w-full h-[10%] py-4 flex gap-6 items-center justify-center">
                      {data.media.map((url: string, index: number) => {
                          if (isVideo(url)) {
-                            return <video key={index} src={url} className={`rounded-2xl max-h-[80%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
+                            return <video key={index} src={url} className={`rounded-2xl max-h-[60%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
                          } else {
-                             return <img key={index} src={url} alt="Image" className={`rounded-2xl max-h-[80%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
+                             return <img key={index} src={url} alt="Image" className={`rounded-2xl max-h-[60%] object-contain transition-transform duration-200 ${imgIndex == index ? "border-[3px] border-white" : "opacity-60"} ${data.media.length > 0 && imgIndex == index && "scale-[1.2]"}`}/>
                          }
                      })}
                  </div>

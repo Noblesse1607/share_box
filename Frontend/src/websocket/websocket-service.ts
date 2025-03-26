@@ -78,3 +78,5 @@ import { Client } from "@stomp/stompjs";
          this.subscriptions.clear();
      }
  }
+
+ export default new WebsocketService();

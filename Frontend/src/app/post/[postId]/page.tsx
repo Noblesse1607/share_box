@@ -21,6 +21,8 @@ export default function PostPage() {
     const [comment, setComment] = useState<any>(null);
     const [cmtContent, setCmtContent] = useState<string>("");
     const [reload, setReload] = useState<number>(0);
+    const id = sessionStorage.getItem("commentId");
+    const [hasScrolledToElement, setHasScrolledToElement] = useState(false);
     
     // Chỉ lấy thông tin user khi chạy trên client
     useEffect(() => {
@@ -66,6 +68,19 @@ export default function PostPage() {
         getComment();
     }, [reload, postId]);
 
+    useEffect(() => {
+        if (id && comment) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "center" });
+                setHasScrolledToElement(true);
+                setTimeout(() => {
+                    setHasScrolledToElement(false);
+                }, 1500);
+            }
+        }
+    }, [comment])
+
     return (
         <MainLayout>
             {post && (
@@ -81,14 +96,14 @@ export default function PostPage() {
                         <PostCard data={post} canNavigate={false} isInCom={false}/>
                         <div id="myCmt" className="w-full h-[80px] p-4 flex items-center justify-between">
                             <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
-                                <img src={post?.userAvatar} alt="userAvatar" />
+                                <img src={user.avatar} alt="userAvatar" />
                             </div>
                             <input
                                 value={cmtContent}
                                 onChange={(e) => setCmtContent(e.target.value)}
                                 type="text"
                                 className="w-[85%] h-[60px] p-4 border border-lineColor outline-none rounded-full"
-                                placeholder={`Add a comment with ${post?.username}`}
+                                placeholder={`Add a comment with ${user.username}`}
                             />
                             <div
                                 onClick={handleSendComment}
@@ -105,7 +120,7 @@ export default function PostPage() {
                             ) : (
                                 <>
                                     {comment?.map((cmt: any, index: number) => (
-                                        <CommentCard key={index} data={cmt} setReload={setReload} />
+                                        <CommentCard key={index} data={cmt} setReload={setReload} isScroll={hasScrolledToElement}/>
                                     ))}
                                 </>
                             )}

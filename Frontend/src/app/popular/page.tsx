@@ -3,6 +3,7 @@
 import MainLayout from "@/components/mainLayout";
 import PostCard from "@/components/postCard";
 import RecentCard from "@/components/recentCard";
+import OnlineCard from "@/components/onlineCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 export default function Popular() {
@@ -57,6 +58,7 @@ export default function Popular() {
                </div>
              </div>
            </div>
+           <OnlineCard />
         </main>
       </MainLayout>      
     );

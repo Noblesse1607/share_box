@@ -7,6 +7,7 @@ import MainLayout from "../components/mainLayout";
 import { useEffect, useState } from "react";
 import { ChooseTopicDropdown } from "@/components/topicDropdown";
 import RecentCard from "@/components/recentCard";
+import OnlineCard from "@/components/onlineCard";
 
 export default function Home() {
     const userString = sessionStorage.getItem("user");
@@ -86,6 +87,7 @@ export default function Home() {
                </div>
              </div>
            </div>
+           <OnlineCard />
         </main>
       </MainLayout>   
     );

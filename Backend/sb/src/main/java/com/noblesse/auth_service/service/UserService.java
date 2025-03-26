@@ -134,7 +134,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return user.toUserResponse();
