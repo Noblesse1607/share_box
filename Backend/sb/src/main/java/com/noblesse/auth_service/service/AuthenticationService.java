@@ -40,6 +40,8 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
 
+    FriendRequestService friendRequestService;
+
     UserRepository userRepository;
     InvalidatedTokenRepository invalidatedTokenRepository;
 
@@ -71,6 +73,8 @@ public class AuthenticationService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         var token = generateToken(user);
+
+        friendRequestService.notifyFriendsAboutOnlineStatus(savedUser);
 
         return AuthenticationResponse.builder()
                 .token(token)

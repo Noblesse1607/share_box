@@ -25,4 +25,7 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
             "SELECT f.receiver FROM FriendRequest f WHERE f.requester.id = :userId AND f.status = com.noblesse.auth_service.enums.Status.ACCEPTED")
     List<User> findFriendsByUserId(@Param("userId") Long userId);
 
+    @Query("SELECT f.requester FROM FriendRequest f WHERE f.receiver.id = :userId AND f.status = com.noblesse.auth_service.enums.Status.PENDING")
+    List<User> findPendingReqsByUserId(@Param("userId") Long userId);
+
 }

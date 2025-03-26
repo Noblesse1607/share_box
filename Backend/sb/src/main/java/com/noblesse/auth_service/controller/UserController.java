@@ -43,6 +43,14 @@ public class UserController {
                 .build();
     }
 
+    @PostMapping("/offline/{userId}")
+    public ApiResponse<Void> setUserOffline(@PathVariable Long userId) {
+        userService.setUserOffline(userId);
+        return ApiResponse.<Void>builder()
+                .message("Set offline successfully !")
+                .build();
+    }
+
     @DeleteMapping("/delete/{userId}")
     public String deleteUser(@PathVariable Long userId){
         userService.deleteUser(userId);

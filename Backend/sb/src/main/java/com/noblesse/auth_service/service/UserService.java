@@ -37,7 +37,10 @@ import java.util.stream.Collectors;
 public class UserService {
 
     UserRepository userRepository;
+
     TopicRepository topicRepository;
+
+    FriendRequestService friendRequestService;
 
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
@@ -69,6 +72,15 @@ public class UserService {
 
         savedUser = userRepository.save(savedUser);
         return savedUser.toUserResponse();
+    }
+
+    public void setUserOffline(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setOnline(false);
+        userRepository.save(user);
+        friendRequestService.notifyFriendsAboutOnlineStatus(user);
     }
 
     public String uploadAvatar(byte[] avatarData,Long userId, String fileName){
@@ -173,6 +185,7 @@ public class UserService {
 
                     return userRepository.save(newUser);
                 });
+        friendRequestService.notifyFriendsAboutOnlineStatus(user);
         return user.toUserResponse();
     }
 }

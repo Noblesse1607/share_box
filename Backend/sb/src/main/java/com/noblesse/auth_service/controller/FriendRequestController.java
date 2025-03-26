@@ -32,16 +32,30 @@ public class FriendRequestController {
     }
 
     @PostMapping("/response")
-    public ResponseEntity<FriendRequest> respondToRequest(
+    public ResponseEntity<ApiResponse<Void>> respondToRequest(
             @RequestParam Long requesterId, @RequestParam Long receiverId, @RequestParam String status) {
         Status requestStatus = Status.valueOf(status.toUpperCase());
-        FriendRequest updatedRequest = friendRequestService.respondToRequest(requesterId, receiverId, requestStatus);
-        return ResponseEntity.ok(updatedRequest);
+        friendRequestService.respondToRequest(requesterId, receiverId, requestStatus);
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .message("Friend request updated successfully")
+                        .build());
+    }
+
+    @PostMapping("/cancel-request")
+    public ResponseEntity<ApiResponse<Void>> cancelFriendRequest(
+            @RequestParam Long requesterId,
+            @RequestParam Long receiverId) {
+        friendRequestService.cancelFriendRequest(requesterId, receiverId);
+        return ResponseEntity.ok(
+                ApiResponse.<Void>builder()
+                        .message("Friend request cancelled successfully")
+                        .build());
     }
 
     @GetMapping("/pending")
-    public ApiResponse<List<FriendPendingResponse>> getPendingRequests(@RequestParam Long receiverId) {
-        return ApiResponse.<List<FriendPendingResponse>>builder()
+    public ApiResponse<List<UserResponse>> getPendingRequests(@RequestParam Long receiverId) {
+        return ApiResponse.<List<UserResponse>>builder()
                 .result(friendRequestService.getPendingRequests(receiverId))
                 .build();
     }
@@ -50,6 +64,13 @@ public class FriendRequestController {
     public ApiResponse<List<UserResponse>> getFriends(@RequestParam Long userId) {
         return ApiResponse.<List<UserResponse>>builder()
                 .result(friendRequestService.getFriends(userId))
+                .build();
+    }
+
+    @GetMapping("/online-list/{userId}")
+    public ApiResponse<List<UserResponse>> getOnlineFriends(@PathVariable Long userId) {
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(friendRequestService.getOnlineFriends(userId))
                 .build();
     }
 

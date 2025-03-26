@@ -3,11 +3,13 @@ package com.noblesse.auth_service.service;
 import com.noblesse.auth_service.dto.request.CommentRequest;
 import com.noblesse.auth_service.dto.response.CommentResponse;
 import com.noblesse.auth_service.entity.Comment;
+import com.noblesse.auth_service.entity.Notification;
 import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.exception.AppException;
 import com.noblesse.auth_service.exception.ErrorCode;
 import com.noblesse.auth_service.repository.CommentRepository;
+import com.noblesse.auth_service.repository.NotificationRepository;
 import com.noblesse.auth_service.repository.PostRepository;
 import com.noblesse.auth_service.repository.UserRepository;
 import lombok.AccessLevel;
@@ -31,6 +33,10 @@ public class CommentService {
 
     UserRepository userRepository;
 
+    NotificationService notificationService;
+
+    NotificationRepository notificationRepository;
+
     @Transactional
     public CommentResponse createComment(CommentRequest request, Long userId, Long postId){
 
@@ -50,6 +56,19 @@ public class CommentService {
         }
 
         Comment savedComment = commentRepository.save(comment);
+        if (post.getUser().getUserId() != user.getUserId()) {
+            Notification notification = Notification.builder()
+                    .message(user.getUsername() + " just commented on your post!" + request.getContent())
+                    .image(user.getAvatar())
+                    .receiverId(post.getUser().getUserId())
+                    .commentId(savedComment.getId())
+                    .postId(postId)
+                    .build();
+            notificationRepository.save(notification);
+            notificationService.notifyUser(post.getUser().getUserId(), user.getUsername() + " just commented on your post!" + request.getContent(), user.getAvatar());
+        }
+
+
         return savedComment.toCommentResponse();
     }
 
