@@ -95,8 +95,8 @@ export default function PostPage() {
                     <div className="w-[70%]">
                         <PostCard data={post} canNavigate={false} isInCom={false}/>
                         <div id="myCmt" className="w-full h-[80px] p-4 flex items-center justify-between">
-                            <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
-                                <img src={user.avatar} alt="userAvatar" />
+                            <div className="w-[40px] h-[40px] rounded-full overflow-hidden flex items-center justify-center">
+                                <img src={user.avatar} alt="userAvatar" className="w-full h-full object-cover"/>
                             </div>
                             <input
                                 value={cmtContent}

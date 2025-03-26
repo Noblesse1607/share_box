@@ -108,8 +108,8 @@
      return (
         <div id={`id${data.commentId}`} className={`w-full p-4 select-none ${(isScroll && isChosen) && 'flash-bg'}`}>
              <div className="flex gap-4">
-                 <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
-                     <img src={data.avatar} alt="userAvatar" />
+                 <div className="w-[40px] h-[40px] rounded-full overflow-hidden flex items-center justify-center">
+                     <img src={data.avatar} alt="userAvatar" className="w-full h-full object-cover"/>
                  </div>
                  <div className="flex items-center gap-4">
                      <h1>{data.username}</h1>
