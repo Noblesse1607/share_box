@@ -35,8 +35,8 @@ import Image from "next/image";
                          className="w-[12px]"
                      />
                      <p className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-textGrayColor1">{comment}</p>
+                    </div>
                  </div>
              </div>
-         </div>
      )
  }

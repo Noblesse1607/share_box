@@ -12,9 +12,11 @@
  import Image from "next/image";
  import { SetStateAction, useEffect, useState } from "react";
  import axios from "axios";
+ import { useRouter } from "next/navigation";
  
  export default function CommentCard({ data, setReload, isScroll } : { data: any, setReload: (value: SetStateAction<number>) => void, isScroll?: boolean }) {
      const userString = sessionStorage.getItem("user");
+     const router = useRouter();
      const user = userString ? JSON.parse(userString) : {};
      const [isExtend, setIsExtend] = useState<boolean>(false);
      const [isReply, setIsReply] = useState<boolean>(false);
@@ -112,7 +114,10 @@
                      <img src={data.avatar} alt="userAvatar" className="w-full h-full object-cover"/>
                  </div>
                  <div className="flex items-center gap-4">
-                     <h1>{data.username}</h1>
+                     <h1 onClick={(e)=>{
+                                         e.stopPropagation();
+                                         router.push(`/account/${data.userId}`)}
+                                     }>{data.username}</h1>
                      <div className="flex gap-1">
                          <Image
                              src={GoogleIcon}

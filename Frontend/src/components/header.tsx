@@ -81,6 +81,7 @@ export default function Header({ user } : { user: any }) {
             const mes = JSON.parse(message);
             const str = "just commented on your post!";
             const str2 = "You have a new friend request";
+            const str3 = "just replied to your comment!";
             
             if (mes.message.includes(str)) {
                 const index = mes.message.indexOf(str) + str.length;
@@ -96,7 +97,26 @@ export default function Header({ user } : { user: any }) {
                     image: mes.image,
                     comment: comment
                 })
-            } else {
+            } 
+             // Xử lý thông báo reply comment
+              else if (mes.message.includes(str3)) {
+            const index = mes.message.indexOf(str3) + str3.length;
+            const message = mes.message.substring(0, index);
+            const comment = mes.message.substring(index, mes.message.length);
+            
+            setReload(n=>n+1);
+            setRenew(n=>n+1);
+            setMessage({
+                type: "noti",
+                message: message,
+                redirect: false,
+                image: mes.image,
+                comment: comment
+            })
+            }
+            
+            // Xử lý thông báo có request kết bạn
+            else {
                 if (mes.message.includes(str2)) {
                     setReload(n=>n+1);
                     setRefresh(n=>n+1);

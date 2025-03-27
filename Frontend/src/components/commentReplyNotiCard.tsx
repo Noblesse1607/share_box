@@ -1,5 +1,5 @@
 import Image from "next/image";
-import ChatIcon from "@/public/comment-dots-solid.svg";
+import ChatIcon from "../../public/comment-dots-solid.svg";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { SetStateAction } from "react";

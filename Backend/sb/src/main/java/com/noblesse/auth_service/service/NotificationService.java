@@ -2,6 +2,7 @@ package com.noblesse.auth_service.service;
 
 import com.noblesse.auth_service.dto.response.NotificationResponse;
 import com.noblesse.auth_service.entity.Notification;
+import com.noblesse.auth_service.enums.NotificationType;
 import com.noblesse.auth_service.repository.NotificationRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,23 @@ public class NotificationService {
 
     public void notifyFriendReq(Long userId, String mes) {
         messagingTemplate.convertAndSend("/topic/friendReq/" + userId, mes);
+    }
+
+    public void notifyCommentReply(Long userId, String message, String image, Long commentId, Long postId) {
+        Notification notification = Notification.builder()
+                .message(message)
+                .image(image)
+                .receiverId(userId)
+                .commentId(commentId)
+                .postId(postId)
+                .build();
+
+        // Lưu thông báo vào database
+        notificationRepository.save(notification);
+
+        // Gửi thông báo realtime
+        messagingTemplate.convertAndSend("/topic/comment/reply/" + userId,
+                notification.toNotificationResponse());
     }
 
     // Message

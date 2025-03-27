@@ -2,10 +2,8 @@ package com.noblesse.auth_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.noblesse.auth_service.dto.response.NotificationResponse;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.noblesse.auth_service.enums.NotificationType;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;

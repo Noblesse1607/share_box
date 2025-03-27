@@ -53,6 +53,22 @@ public class CommentService {
             Comment parentComment = commentRepository.findById(request.getParentCommentId())
                     .orElseThrow(() -> new IllegalArgumentException("Parent Comment không tồn tại"));
             comment.setParentComment(parentComment);
+
+            if (parentComment.getUser().getUserId() != user.getUserId()) {
+                Notification replyNotification = Notification.builder()
+                        .message(user.getUsername() + " just replied to your comment!" + request.getContent())
+                        .image(user.getAvatar())
+                        .receiverId(parentComment.getUser().getUserId())
+                        .commentId(parentComment.getId())
+                        .postId(postId)
+                        .build();
+                notificationRepository.save(replyNotification);
+                notificationService.notifyUser(
+                        parentComment.getUser().getUserId(),
+                        user.getUsername() + " just replied to your comment!" + request.getContent(),
+                        user.getAvatar()
+                );
+            }
         }
 
         Comment savedComment = commentRepository.save(comment);
