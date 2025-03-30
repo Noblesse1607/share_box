@@ -23,6 +23,8 @@
  import CustomFeedCard from "@/components/customFeedCard";
  import websocketService from "@/websocket/websocket-service";
  import { useFriendReqListContext } from "@/context/FriendReqContext";
+import FriendCard from "@/components/friendCard";
+import FriendListCard from "@/components/friendListCard";
  
  export default function AccountPage({ params }: {params: Promise<{ userId: string }>}) {
 
@@ -37,12 +39,14 @@
      const communityRef = useRef<HTMLDivElement>(null);
      const customFeedRef = useRef<HTMLDivElement>(null);
      const favoriteRef = useRef<HTMLDivElement>(null);
+     const friendRef = useRef<HTMLDivElement>(null);
      const editBox = useRef<HTMLDivElement>(null);
      const [data, setData] = useState<any>();
      const [customFeed, setCustomFeed] = useState<any[]>([]);
      const [community, setCommunity] = useState<any[]>([]);
      const [posts, setPosts] = useState<any[]>([]);
      const [favPost, setFavPost] = useState<any[]>([]);
+     const [friendList, setFriendList] = useState<any[]>([]);
      const [isLoading, setIsLoading] = useState<boolean>(false);
      const [activePart, setActivePart] = useState<string>("post");
      const [isFriend, setIsFriend] = useState<"ACCEPTED" | "PENDING" | "REJECTED">("REJECTED");
@@ -202,6 +206,17 @@
             }
         }
         getFavPost();
+
+        const getFriendList = async() => {
+            const res = await axios.get(
+                `http://localhost:8080/sharebox/friend/list?userId=${userId}`
+            )
+            if (res.data.result) {
+                setFriendList(res.data.result);
+            }
+        }
+        getFriendList();
+
      }, [reload])
  
      useEffect(() => {
@@ -209,6 +224,7 @@
          communityRef.current?.classList.remove("active-part");
          customFeedRef.current?.classList.remove("active-part");
          favoriteRef.current?.classList.remove("active-part");
+         friendRef.current?.classList.remove("active-part");
  
          switch (activePart) {
              case "post":
@@ -222,6 +238,9 @@
                  break;
              case "favorite":
                  favoriteRef.current?.classList.add("active-part");
+                 break;
+             case "friend":
+                 friendRef.current?.classList.add("active-part");    
                  break;
          }
      }, [activePart])
@@ -265,6 +284,9 @@
                              </div>
                              <div ref={favoriteRef} onClick={()=>setActivePart("favorite")} className="px-4 h-[50px] flex rounded-full items-center justify-center hover:scale-[1.05] duration-150 cursor-pointer border border-lineColor">
                                  Favourites
+                             </div>
+                             <div ref={friendRef} onClick={()=>setActivePart("friend")} className="px-4 h-[50px] flex rounded-full items-center justify-center hover:scale-[1.05] duration-150 cursor-pointer border border-lineColor">
+                                 Friends
                              </div>
                          </div>
                          <div className="w-full mt-6">
@@ -315,6 +337,19 @@
                                             <div>
                                                 {favPost.map((post: any, index: number) => {
                                                     return <PostCard key={post.content} data={post} canNavigate isInCom={false}/>
+                                             })}
+                                         </div>
+                                     }
+                                 </>
+                                 :
+                                 activePart == "friend" ?
+                                    <>
+                                        {friendList.length == 0 ?
+                                            <p className="text-textGrayColor1 font-bold text-center">{data ? "He/She" : "You"} doesn't have any friends yet !</p>
+                                            :
+                                            <div className="grid grid-cols-2 grid-flow-row gap-4">
+                                                {friendList.map((friend: any, index: number) => {
+                                                    return <FriendListCard key={index} friend={friend}/>
                                              })}
                                          </div>
                                      }
