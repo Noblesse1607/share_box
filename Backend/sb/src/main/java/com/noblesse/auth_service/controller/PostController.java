@@ -132,8 +132,10 @@ public class PostController {
 
     @PutMapping("/update/{postId}")
     public ApiResponse<PostResponse> updatePost(@PathVariable Long postId, @ModelAttribute UpdatePostRequest request) throws IOException {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //log.info("UserEmail: " + userEmail);
+        User user = userRepository.findByUserEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return ApiResponse.<PostResponse>builder()
                 .result(postService.updatePost(postId,request, user.getUserId()))

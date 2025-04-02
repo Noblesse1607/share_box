@@ -5,6 +5,7 @@
 
 :root {
     --black-color: #000000;
+    --transparent-black: rgba(0,0,0,0.8);
     --light-black-color: hsla(0, 0%, 0%, 0.5);
     --text-gray-color-1: #AEAEAE;
     --text-gray-color-2: #ACA9A9;
@@ -14,6 +15,7 @@
     --light-white-color: rgba(255,255,255,0.9);
     --image-block: #2b313c63;
     --post-hover: #e5ebee6e;
+
     --main-color: #EF7575;
     --button-color: #EF9575;
     --light-button-color: #ef9575b3;

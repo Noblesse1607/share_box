@@ -38,7 +38,7 @@
          <div onClick={handleNavigate} className="p-2 rounded-md w-[99%] h-[60px] flex justify-between select-none cursor-pointer hover:bg-slate-200">
              <div className="flex gap-6">
                  <div className="w-[45px] h-[45px] rounded-full bg-red-300 overflow-hidden">
-                     <img src={data.userAvatar} alt="user avatar"/>
+                     <img src={data.userAvatar} alt="user avatar" className="w-full h-full object-cover"/>
                  </div>
                  <div className="flex flex-col justify-center w-[160px]">
                      <h1 className="w-[140px] font-bold whitespace-nowrap overflow-hidden text-ellipsis">{data.title}</h1>

@@ -9,10 +9,7 @@ import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.exception.AppException;
 import com.noblesse.auth_service.exception.ErrorCode;
-import com.noblesse.auth_service.repository.CommunityRepository;
-import com.noblesse.auth_service.repository.PostRepository;
-import com.noblesse.auth_service.repository.UserRepository;
-import com.noblesse.auth_service.repository.VoteRepository;
+import com.noblesse.auth_service.repository.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -47,6 +44,8 @@ public class PostService {
     VoteRepository voteRepository;
 
     CommunityRepository communityRepository;
+
+    CommentRepository commentRepository;
 
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
@@ -185,6 +184,7 @@ public class PostService {
     }
 
     public void deletePost(Long postId){
+        commentRepository.deleteByPostId(postId);
         postRepository.deleteById(postId);
     }
 
