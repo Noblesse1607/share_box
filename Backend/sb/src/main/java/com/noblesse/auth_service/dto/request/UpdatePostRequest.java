@@ -12,12 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreatePostRequest {
-
-    String title;
-    List<Topic> postTopics;
-    String content;
-    List<MultipartFile> media;
-    Long communityId;
-
+public class UpdatePostRequest {
+    private String title;
+    private String content;
+    private List<Topic> postTopics;
+    private List<MultipartFile> newMedia;
+    private List<String> mediaToRemove;
+    private Long communityId;
 }

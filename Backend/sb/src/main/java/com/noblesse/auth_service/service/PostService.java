@@ -2,6 +2,7 @@ package com.noblesse.auth_service.service;
 
 import com.noblesse.auth_service.dto.request.CreatePostRequest;
 import com.noblesse.auth_service.dto.request.SearchRequest;
+import com.noblesse.auth_service.dto.request.UpdatePostRequest;
 import com.noblesse.auth_service.dto.response.PostResponse;
 import com.noblesse.auth_service.entity.Community;
 import com.noblesse.auth_service.entity.Post;
@@ -18,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -180,5 +183,75 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
         return post.toPostResponse();
     }
+
+    public void deletePost(Long postId){
+        postRepository.deleteById(postId);
+    }
+
+    @Transactional
+    public PostResponse updatePost(Long postId, UpdatePostRequest request, Long userId) throws IOException {
+        // Find the post
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        // Verify that the current user is the owner of the post
+        if (!post.getUser().getUserId().equals(userId)) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        // Update community if changed
+        if (request.getCommunityId() != null &&
+                (post.getCommunity() == null || !post.getCommunity().getId().equals(request.getCommunityId()))) {
+
+            Community community = communityRepository.findById(request.getCommunityId())
+                    .orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+            if (!community.getMembers().contains(user)) {
+                throw new AppException(ErrorCode.USER_NOT_MEMBER_OF_COMMUNITY);
+            }
+
+            post.setCommunity(community);
+        }
+
+        // Update basic fields if provided
+        if (request.getTitle() != null) {
+            post.setTitle(request.getTitle());
+        }
+
+        if (request.getContent() != null) {
+            post.setContent(request.getContent());
+        }
+
+        if (request.getPostTopics() != null) {
+            post.setPostTopic(request.getPostTopics());
+        }
+
+        // Handle media changes
+        List<String> currentMedia = post.getMedia() != null ? post.getMedia() : new ArrayList<>();
+
+        // Remove media if specified
+        if (request.getMediaToRemove() != null && !request.getMediaToRemove().isEmpty()) {
+            currentMedia.removeAll(request.getMediaToRemove());
+        }
+
+        // Add new media if provided
+        if (request.getNewMedia() != null && !request.getNewMedia().isEmpty()) {
+            Long nextPostId = postRepository.countByUser(post.getUser());
+            for (MultipartFile file : request.getNewMedia()) {
+                String mediaUrl = uploadPostMedia(file, userId, nextPostId);
+                currentMedia.add(mediaUrl);
+            }
+        }
+
+        post.setMedia(currentMedia);
+
+        // Save and return updated post
+        Post updatedPost = postRepository.save(post);
+        return updatedPost.toPostResponse();
+    }
+
 
 }

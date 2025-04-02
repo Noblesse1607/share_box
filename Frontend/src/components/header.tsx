@@ -6,10 +6,10 @@ import ChatIcon from "../../public/comment-solid.svg";
 import PlusIcon from "../../public/plus-solid-black.svg";
 import NotifiIcon from "../../public/bell-solid.svg";
 import CircleDot from "../../public/circle-solid-red.svg";
- import UserIcon from "../../public/user-plus-solid.svg";
- import UserIconGrey from "../../public/user-plus-solid-grey.svg";
- import PostIcon from "../../public/paper-plane-solid.svg";
- import PostIconGrey from "../../public/paper-plane-solid-grey.svg";
+import UserIcon from "../../public/user-plus-solid.svg";
+import UserIconGrey from "../../public/user-plus-solid-grey.svg";
+import PostIcon from "../../public/paper-plane-solid.svg";
+import PostIconGrey from "../../public/paper-plane-solid-grey.svg";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -18,7 +18,7 @@ import ToastMessage from "./toastMessage";
 import { useFriendReqListContext } from "@/context/FriendReqContext";
 import { useNotiContext } from "@/context/NotiContext";
 import FriendReqCard from "./friendReqCard";
-import CommentNotiCard from "./commentNotiCard";
+import NotificationCard from "./commentNotiCard";
 import { useChatroomContext } from "@/context/ChatroomContext";
 import ChatroomCard from "./chatroomCard";
 import { useSelectedRoomContext } from "@/context/SelectedRoomContext";
@@ -82,6 +82,8 @@ export default function Header({ user } : { user: any }) {
             const str = "just commented on your post!";
             const str2 = "You have a new friend request";
             const str3 = "just replied to your comment!";
+            const strUpvote = "just upvoted your post!";
+            const strDownvote = "just downvoted your post!";
             
             if (mes.message.includes(str)) {
                 const index = mes.message.indexOf(str) + str.length;
@@ -113,6 +115,28 @@ export default function Header({ user } : { user: any }) {
                 image: mes.image,
                 comment: comment
             })
+            }
+
+            else if (mes.message.includes(strUpvote)) {
+                setReload(n=>n+1);
+                setRenew(n=>n+1);
+                setMessage({
+                    type: "noti",
+                    message: mes.message,
+                    redirect: false,
+                    image: mes.image
+                })
+            }
+            // Xử lý thông báo downvote post
+            else if (mes.message.includes(strDownvote)) {
+                setReload(n=>n+1);
+                setRenew(n=>n+1);
+                setMessage({
+                    type: "noti",
+                    message: mes.message,
+                    redirect: false,
+                    image: mes.image
+                })
             }
             
             // Xử lý thông báo có request kết bạn
@@ -323,7 +347,7 @@ export default function Header({ user } : { user: any }) {
                                      :
                                      <div>
                                          {noti.map((no: any, index: number) => {
-                                             return <CommentNotiCard key={index} setRenew={setRenew} id={no.notiId} message={no.message} image={no.image} commentId={no.commentId} postId={no.postId}/>
+                                             return <NotificationCard key={index} setRenew={setRenew} id={no.notiId} message={no.message} image={no.image} commentId={no.commentId} postId={no.postId}/>
                                          })}
                                      </div>
                                  }

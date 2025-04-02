@@ -23,7 +23,8 @@ public enum ErrorCode {
     USER_NOT_MEMBER_OF_COMMUNITY(1016, "User not member in community", HttpStatus.NOT_FOUND),
     USER_ALREADY_MEMBER_OF_COMMUNITY(1017, "User existed in community", HttpStatus.BAD_REQUEST),
     CUSTOMFEED_NOT_FOUND(1015, "Customfeed not found", HttpStatus.NOT_FOUND),
-    COMMUNITY_ALREADY_EXISTS_IN_FEED(1016, "Community already exists in feed", HttpStatus.BAD_REQUEST)
+    COMMUNITY_ALREADY_EXISTS_IN_FEED(1016, "Community already exists in feed", HttpStatus.BAD_REQUEST),
+    YOU_ARE_NOT_THE_OWNER(1017, "You are not the owner of this post", HttpStatus.UNAUTHORIZED)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
