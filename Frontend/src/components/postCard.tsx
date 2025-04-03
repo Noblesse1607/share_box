@@ -10,6 +10,7 @@
  import CloseIcon from "../../public/xmark-solid.svg";
  import OptionIConPink from "../../public/bookmark-solid-pink.svg";
  import Arrow from "../../public/angle-up-solid-white.svg";
+ import EditPost from "./editCard";
  
  import Image from "next/image";
  import { Music, Game, Anime, Movie, Manga, Sport } from "./topics";
@@ -33,6 +34,9 @@
      const [community, setCommunity] = useState<any>();
      const [isJoin, setIsJoin] = useState<boolean>(false);
      const [isSave, setIsSave] = useState<boolean>(false);
+     const [isOwner, setIsOwner] = useState(false);
+     const [isEditing, setIsEditing] = useState(false);
+     const [postData, setPostData] = useState(data);
  
      const handleSavePost = async(e: any) => {
          e.stopPropagation();
@@ -49,6 +53,24 @@
              setIsSave(false);
          }
      }
+
+     const handleDeletePost = async (e: any) => {
+        e.stopPropagation();
+        //console.log("Token:" + user.token);
+        const token = user.token;
+        try {
+            await axios.delete(`http://localhost:8080/sharebox/post/delete/${data.postId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            alert("Xóa bài post thành công!");
+            router.refresh();
+        } catch (error) {
+            console.error("Lỗi khi xóa bài post:", error);
+            alert("Có lỗi xảy ra khi xóa bài post!");
+        }
+    };
  
      const handleClick = (e: any) => {
          e.stopPropagation();
@@ -156,6 +178,35 @@
         }
     }
 
+    const handleEditSuccess = async () => {
+        try {
+            // Refresh post data after edit
+            const res = await axios.get(
+                `http://localhost:8080/sharebox/post/${postData.postId}`
+            );
+            
+            if (res.data.result) {
+                setPostData(res.data.result);
+                
+                // Update session storage for recent posts if this post is there
+                const recentString = sessionStorage.getItem("recent");
+                if (recentString) {
+                    const recent = JSON.parse(recentString);
+                    const updatedRecent = recent.map((item: any) => 
+                        item.postId === postData.postId ? res.data.result : item
+                    );
+                    sessionStorage.setItem("recent", JSON.stringify(updatedRecent));
+                }
+            }
+        } catch (error) {
+            console.error("Error refreshing post data:", error);
+        }
+    };
+
+    useEffect(() => {
+        setIsOwner(user.userId === data.userId);
+    }, [user.userId, data.userId]);
+
     useEffect(() => {
         const checkVote = async () => {
             const res = await axios.get(
@@ -215,6 +266,13 @@
  
      return (
          <>
+         {isEditing && (
+            <EditPost 
+                post={postData} 
+                onClose={() => setIsEditing(false)} 
+                onSuccess={handleEditSuccess} 
+            />
+        )}
              <div onClick={handleNavigate} className={`w-full px-4 py-8 border-b border-b-lineColor select-none ${canNavigate && "cursor-pointer hover:bg-postHover"}`}>
                  <div className="flex justify-between">
                  {((data.communityId == null) || (community && isInCom)) &&
@@ -303,6 +361,25 @@
                             </div>
                           }
                           <div className="flex gap-4 items-center">
+                          {isOwner && (
+                        <>
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsEditing(true);
+                                }}
+                                className="px-3 py-1 bg-mainColor text-white rounded-full hover:opacity-90"
+                            >
+                                Sửa
+                            </button>
+                            <button
+                                onClick={handleDeletePost}
+                                className="px-3 py-1 bg-voteDownColor text-white rounded-full hover:opacity-90"
+                            >
+                                Xóa
+                            </button>
+                        </>
+                    )} 
                               {(data.communityId != null && !isInCom) ? isJoin ?
                                   <button onClick={handleJoin} className="w-[80px] h-[40px] rounded-full bg-textHeadingColor hover:scale-[1.03] duration-150 text-white">
                                       Joined
@@ -328,10 +405,12 @@
                                  className="w-[25px] cursor-pointer hover:scale-[1.05]"
                                  onClick={handleSavePost}
                              />
-                         }                       
+                         }      
                          </div>
                      </div>
- 
+
+                     
+
                  <div className="mt-6">
                      <h2 className="text-2xl font-semibold">{data.title}</h2>
                      <p className="text-lg mt-2">{data.content}</p>

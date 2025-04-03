@@ -13,7 +13,7 @@ export default function FriendListCard({ friend }: { friend: any }) {
                 alt="Friend Avatar"
                 width={50}
                 height={50}
-                className="rounded-full flex-shrink-0"
+                className="rounded-full flex-shrink-0 object-cover w-[50px] h-[50px]"
             />
             <div className="overflow-hidden">
                 <h3 className="font-bold text-lg truncate">{friend.username}</h3>
