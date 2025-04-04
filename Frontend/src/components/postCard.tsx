@@ -11,6 +11,7 @@
  import OptionIConPink from "../../public/bookmark-solid-pink.svg";
  import Arrow from "../../public/angle-up-solid-white.svg";
  import EditPost from "./editCard";
+ import ToastMessage from "./toastMessage";
  
  import Image from "next/image";
  import { Music, Game, Anime, Movie, Manga, Sport } from "./topics";
@@ -37,6 +38,16 @@
      const [isOwner, setIsOwner] = useState(false);
      const [isEditing, setIsEditing] = useState(false);
      const [postData, setPostData] = useState(data);
+     const [showMessage, setShowMessage] = useState<boolean>(false);
+     const [message, setMessage] = useState<{
+        type: string,
+        message: string,
+        redirect: boolean
+    }>({
+        type: "",
+        message: "",
+        redirect: false
+    });
  
      const handleSavePost = async(e: any) => {
          e.stopPropagation();
@@ -64,11 +75,23 @@
                     Authorization: `Bearer ${token}`,
                 },
             });
-            alert("Xóa bài post thành công!");
-            router.refresh();
+            setMessage({
+                type: "success",
+                message: "Deleted post successfully!",
+                redirect: true
+            });
+            setShowMessage(true);
+            setTimeout(() => {
+                router.push('/');
+            }, 2000);
         } catch (error) {
-            console.error("Lỗi khi xóa bài post:", error);
-            alert("Có lỗi xảy ra khi xóa bài post!");
+            console.error("Error delete post:", error);
+            setMessage({
+                type: "warning",
+                message: "Có lỗi xảy ra khi xóa bài post!",
+                redirect: false
+            });
+            setShowMessage(true);
         }
     };
  
@@ -370,13 +393,13 @@
                                 }}
                                 className="px-3 py-1 bg-mainColor text-white rounded-full hover:opacity-90"
                             >
-                                Sửa
+                                Update
                             </button>
                             <button
                                 onClick={handleDeletePost}
                                 className="px-3 py-1 bg-voteDownColor text-white rounded-full hover:opacity-90"
                             >
-                                Xóa
+                                Delete
                             </button>
                         </>
                     )} 
@@ -497,6 +520,7 @@
                      })}
                  </div>
              </div>
+             {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
          </>
      )
  }

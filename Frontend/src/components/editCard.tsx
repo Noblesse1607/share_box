@@ -6,6 +6,7 @@ import axios from "axios";
 import Image from "next/image";
 import CloseIcon from "../../public/xmark-solid.svg";
 import { Music, Game, Anime, Movie, Manga, Sport } from "./topics";
+import ToastMessage from "./toastMessage";
 
 export default function EditPost({ post, onClose, onSuccess }: { post: any, onClose: () => void, onSuccess: () => void }) {
     const router = useRouter();
@@ -21,6 +22,16 @@ export default function EditPost({ post, onClose, onSuccess }: { post: any, onCl
     const [mediaToRemove, setMediaToRemove] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [showMessage, setShowMessage] = useState<boolean>(false);
+     const [message, setMessage] = useState<{
+        type: string,
+        message: string,
+        redirect: boolean
+    }>({
+        type: "",
+        message: "",
+        redirect: false
+    });
 
     useEffect(() => {
         const fetchCommunities = async () => {
@@ -103,13 +114,26 @@ export default function EditPost({ post, onClose, onSuccess }: { post: any, onCl
             );
 
             if (response.data.result) {
-                alert("Cập nhật bài viết thành công!");
-                onSuccess();
-                onClose();
+                setMessage({
+                    type: "success",
+                    message: "Updated Post Successfully!",
+                    redirect: true
+                });
+                setShowMessage(true);
+                setTimeout(() => {
+                    onSuccess();
+                    onClose();
+                    router.push('/');
+                }, 2000);
             }
         } catch (error) {
             console.error("Error updating post:", error);
-            alert("Có lỗi xảy ra khi cập nhật bài viết!");
+            setMessage({
+                type: "warning",
+                message: "Có lỗi xảy ra khi xóa bài post!",
+                redirect: false
+            });
+            setShowMessage(true);
         } finally {
             setIsLoading(false);
         }
@@ -293,6 +317,7 @@ export default function EditPost({ post, onClose, onSuccess }: { post: any, onCl
                     </div>
                 </form>
             </div>
+            {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
         </div>
     );
 }
