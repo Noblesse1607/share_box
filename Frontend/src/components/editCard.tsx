@@ -23,7 +23,7 @@ export default function EditPost({ post, onClose, onSuccess }: { post: any, onCl
     const [isLoading, setIsLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [showMessage, setShowMessage] = useState<boolean>(false);
-     const [message, setMessage] = useState<{
+    const [message, setMessage] = useState<{
         type: string,
         message: string,
         redirect: boolean

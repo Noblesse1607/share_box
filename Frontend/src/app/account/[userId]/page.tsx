@@ -25,6 +25,7 @@
  import { useFriendReqListContext } from "@/context/FriendReqContext";
 import FriendCard from "@/components/friendCard";
 import FriendListCard from "@/components/friendListCard";
+import ToastMessage from "@/components/toastMessage";
  
  export default function AccountPage({ params }: {params: Promise<{ userId: string }>}) {
 
@@ -51,6 +52,16 @@ import FriendListCard from "@/components/friendListCard";
      const [activePart, setActivePart] = useState<string>("post");
      const [isFriend, setIsFriend] = useState<"ACCEPTED" | "PENDING" | "REJECTED">("REJECTED");
      const [reload, setReload] = useState<number>(0);
+     const [showMessage, setShowMessage] = useState<boolean>(false);
+     const [message, setMessage] = useState<{
+        type: string,
+        message: string,
+        redirect: boolean
+    }>({
+        type: "",
+        message: "",
+        redirect: false
+    });
  
      const handleLogout = async() => {
         await axios.post(
@@ -76,11 +87,14 @@ import FriendListCard from "@/components/friendListCard";
              console.error("No file selected");
              return;
          }
+
+         setIsLoading(true);
  
+         try {
          const formData = new FormData();
          formData.append("avatar", file);
  
-         setIsLoading(true);
+        
          const res = await axios.post(
              `http://localhost:8080/sharebox/users/${user.userId}/upload-avatar`,
              formData
@@ -89,18 +103,73 @@ import FriendListCard from "@/components/friendListCard";
          if (res.data) {
              const url = res.data.match(/https?:\/\/[^\s]+/);
              const avatarURL = url ? url[0] : null;
+
+             const nonCachedAvatarURL = avatarURL ? 
+                `${avatarURL}?t=${new Date().getTime()}` : null;
+
              const newUser = {
                  ...user,
-                 avatar: avatarURL
+                 avatar: nonCachedAvatarURL
              }
              sessionStorage.setItem("user", JSON.stringify(newUser));
-             setAvatar(avatarURL);
-             setIsLoading(false);
-         }
+             setAvatar(nonCachedAvatarURL ?? "");
+             setReload(n=>n+1);
+             setMessage({
+                type: "success",
+                message: "Uploading avatar successfully!",
+                redirect: false
+            });
+            setShowMessage(true);
+        }
+    } catch (error: any) {
+        //console.error("Error uploading avatar:", error);
+        
+        if (error.response) {
+            // Server trả về lỗi với status code
+            if (error.response.status === 400) {
+                setMessage({
+                    type: "warning",
+                    message: "File không hợp lệ hoặc quá kích thước cho phép",
+                    redirect: false
+                });
+            } else if (error.response.status === 413) {
+                setMessage({
+                    type: "warning",
+                    message: "File quá lớn, vui lòng chọn file nhỏ hơn",
+                    redirect: false
+                });
+            } else {
+                setMessage({
+                    type: "warning",
+                    message: "Có lỗi xảy ra khi tải lên ảnh đại diện",
+                    redirect: false
+                });
+            }
+        } else if (error.request) {
+            // Không nhận được phản hồi từ server
+            setMessage({
+                type: "warning",
+                message: "Không thể kết nối với máy chủ",
+                redirect: false
+            });
+        } else {
+            // Lỗi khi thiết lập request
+            setMessage({
+                type: "warning",
+                message: "Có lỗi xảy ra khi gửi yêu cầu",
+                redirect: false
+            });
+        }
+        
+        setShowMessage(true);
+    } finally {
+        setIsLoading(false);
+    }
      }
  
      const handleSubmit = async () => {
          if (username != user.username) {
+            try {
              const formData = new FormData();
              formData.append("username", username);
              const res = await axios.put(
@@ -116,7 +185,31 @@ import FriendListCard from "@/components/friendListCard";
                  sessionStorage.setItem("user", JSON.stringify(updatedUser));
                  editBox.current?.classList.toggle("hidden");
                  setReload(n=>n+1);
-             }            
+                 setMessage({
+                    type: "success",
+                    message: "Update username successfully!",
+                    redirect: false
+                });
+                setShowMessage(true);
+            }
+             } catch (error: any) {
+                
+            if (error.response.status === 400) {
+                setMessage({
+                    type: "warning",
+                    message: "Username existed!",
+                    redirect: false
+                });
+                setShowMessage(true);
+            } else {
+                setMessage({
+                    type: "warning",
+                    message: "Error updating account!",
+                    redirect: false
+                });
+                setShowMessage(true);
+            } 
+           }           
          } else {
              editBox.current?.classList.toggle("hidden");
          }
@@ -482,6 +575,7 @@ import FriendListCard from "@/components/friendListCard";
                      </div>
                  </div>
              </main>
+             {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
          </MainLayout>
      )
  }

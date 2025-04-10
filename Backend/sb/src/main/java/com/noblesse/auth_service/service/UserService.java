@@ -127,7 +127,10 @@ public class UserService {
     }
 
     public User updateUser(Long userId, RegisterRequest request) throws IOException, SQLException {
+        if(userRepository.existsByUsername(request.getUsername())) throw  new AppException(ErrorCode.USER_EXISTED);
+
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
         user.setUsername(request.getUsername());
         //user.setUserEmail(request.getUserEmail());
 
