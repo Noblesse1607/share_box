@@ -166,7 +166,7 @@ export default function Header({ user } : { user: any }) {
         setRenew(n=>n+1);
     }, [])
 
-    console.log(unreadMes);
+    //console.log(unreadMes);
     
     return (
         <div className="fixed bg-white z-[60] top-0 left-0 flex justify-between items-center p-4 w-full h-[80px] border border-b-lineColor select-none">

@@ -127,4 +127,8 @@ public class CustomFeedService {
         }
         return posts.stream().map(Post::toPostResponse).collect(Collectors.toList());
     }
+
+    public void deleteFeed(Long feedId){
+        customFeedRepository.deleteById(feedId);
+    }
 }

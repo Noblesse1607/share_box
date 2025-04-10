@@ -180,4 +180,8 @@ public class CommunityService {
         Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
         return community.getMembers();
     }
+
+    public void deleteCommunity(Long communityId){
+        communityRepository.deleteById(communityId);
+    }
 }

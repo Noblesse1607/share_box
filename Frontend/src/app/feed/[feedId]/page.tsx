@@ -10,6 +10,7 @@
  import CustomFeedIcon from "../../../../public/category.svg";
  import Image from "next/image";
  import PostCard from "@/components/postCard";
+ import ToastMessage from "@/components/toastMessage";
  
  type CustomFeedPageProps = {
    params: Promise<{
@@ -29,11 +30,48 @@
      const [searchRes, setSearchRes] = useState<any[]>([]);
      const [refresh, setRefresh] = useState<number>(0);
      const [posts, setPosts] = useState<any[]>([]);
+     const [showMessage, setShowMessage] = useState<boolean>(false);
+     const [message, setMessage] = useState<{
+             type: string,
+             message: string,
+             redirect: boolean
+         }>({
+             type: "",
+             message: "",
+             redirect: false
+         });
  
      const handleShowBox = () => {
          setSearchText("");
          boxRef.current?.classList.toggle("hidden");
      }
+
+     const handleDeleteCustomFeed = async (e: any) => {
+        e.stopPropagation();
+        //console.log("Token:" + user.token);
+        const token = user.token;
+        try {
+            await axios.delete(`http://localhost:8080/sharebox/custom-feed/delete/${feedId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setMessage({
+                type: "success",
+                message: "Deleted feed successfully!",
+                redirect: false
+            });
+            setShowMessage(true);
+        } catch (error) {
+            console.error("Error delete feed:", error);
+            setMessage({
+                type: "warning",
+                message: "Error deleting feed!",
+                redirect: false
+            });
+            setShowMessage(true);
+        }
+    };
  
      const handleAddCom = async(comId: string) => {
          const res = await axios.post(
@@ -149,8 +187,20 @@
                              }
                          </div>
                          <div className="sticky w-[28%] top-[100px] h-fit bg-boxBackground rounded-md p-4 text-textHeadingColor break-words">
+                         <div className="flex justify-between items-center">
+                         <div>
                              <h3 className="text-lg font-bold">{owner ? owner.username : user.username}</h3>
                              <p className="text-sm font-semibold">{feed?.description}</p>
+                             </div>
+                             {feed && feed.ownerId === user.userId && (
+                               <button
+                                    onClick={handleDeleteCustomFeed}
+                                    className="bg-red-500 text-white px-4 py-2 text-sm rounded-full font-bold hover:bg-red-700 hover:scale-105 duration-150"
+                                  >
+                                        Delete Feed
+                                </button>
+                            )}
+                            </div>
                              <div className="mt-4 w-full h-[1px] bg-lineColor"></div>
                              <div className="mt-4 w-full">
                                  <div className="w-full flex justify-between items-center">
@@ -276,6 +326,7 @@
                      </div>
                  </div>
              </main>
+             {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
          </MainLayout>
      )
  }

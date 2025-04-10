@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { ChooseTopicDropdown } from "@/components/topicDropdown";
 import PostCard from "@/components/postCard";
+import ToastMessage from "@/components/toastMessage";
 
 type CommunityPageProps = {
   params: Promise<{ communityId: string }>;
@@ -26,6 +27,17 @@ export default function CommunityPage({ params }: CommunityPageProps) {
   const [owner, setOwner] = useState<any>();
   const [isJoin, setIsJoin] = useState<boolean>(false);
   const [posts, setPosts] = useState<any[]>([]);
+  const [isOwner, setIsOwner] = useState(false);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [message, setMessage] = useState<{
+        type: string,
+        message: string,
+        redirect: boolean
+    }>({
+        type: "",
+        message: "",
+        redirect: false
+    });
 
   const handleJoin = async () => {
     setIsJoin(!isJoin);
@@ -39,6 +51,33 @@ export default function CommunityPage({ params }: CommunityPageProps) {
       );
     }
   };
+
+  const handleDeleteCommunity = async (e: any) => {
+    e.stopPropagation();
+    //console.log("Token:" + user.token);
+    const token = user.token;
+    try {
+        await axios.delete(`http://localhost:8080/sharebox/community/delete/${communityId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        setMessage({
+            type: "success",
+            message: "Deleted community successfully!",
+            redirect: false
+        });
+        setShowMessage(true);
+    } catch (error) {
+        console.error("Error delete community:", error);
+        setMessage({
+            type: "warning",
+            message: "Error deleting community!",
+            redirect: false
+        });
+        setShowMessage(true);
+    }
+};
 
   const handleCreatePost = () => {
     sessionStorage.setItem("selectedCommunity", community.communityId);
@@ -107,6 +146,11 @@ export default function CommunityPage({ params }: CommunityPageProps) {
                    <p>Create post</p>
                  </div>
                }
+               {(community && community?.ownerId === user.userId) && 
+               <div onClick={handleDeleteCommunity} className="w-[150px] h-[40px] rounded-full bg-red-500 text-white flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.05] duration-150">
+                   <p>Delete Community</p>
+               </div>
+                }
                {(community && community?.ownerId != user.userId) &&
                  <button onClick={handleJoin} className="w-[80px] h-[40px] rounded-full cursor-pointer hover:scale-[1.05] duration-150 bg-textHeadingColor text-white">
                    {isJoin ? "Joined" : "Join"}
@@ -162,7 +206,7 @@ export default function CommunityPage({ params }: CommunityPageProps) {
                  <div className="mt-3 flex items-center">
                    <div className="w-[60px] h-[60px] rounded-full bg-textGrayColor1 overflow-hidden">
                      {community &&
-                       <img src={owner ? owner.avatar : user.avatar} alt="Avatar" />
+                       <img src={owner ? owner.avatar : user.avatar} alt="Avatar" className="w-full h-full object-cover"/>
                      }
                 </div>
                 <p className="ml-4 font-bold">{community && owner ? owner.username : user.username}</p>
@@ -172,6 +216,7 @@ export default function CommunityPage({ params }: CommunityPageProps) {
         </div>
        </div>
       </main>
+      {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
     </MainLayout>
   );
 }

@@ -6,13 +6,20 @@ import com.noblesse.auth_service.dto.request.CommunityRequest;
 import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.CommunityResponse;
+import com.noblesse.auth_service.entity.Community;
+import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.User;
+import com.noblesse.auth_service.exception.AppException;
+import com.noblesse.auth_service.exception.ErrorCode;
+import com.noblesse.auth_service.repository.CommentRepository;
+import com.noblesse.auth_service.repository.CommunityRepository;
 import com.noblesse.auth_service.service.CommunityService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -25,6 +32,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommunityController {
     CommunityService communityService;
+    CommunityRepository communityRepository;
 
     @PostMapping("/create/{userId}")
     public ApiResponse<CommunityResponse> createCommunity(@RequestBody CommunityRequest request, @PathVariable Long userId){
@@ -105,5 +113,25 @@ public class CommunityController {
                 .result(communityService.getAllMembers(communityId))
                 .build();
 
+    }
+
+    @DeleteMapping("/delete/{communityId}")
+    public String deleteCommunity(@PathVariable Long communityId, Authentication authentication){
+
+        String currentUserEmail = authentication.getName();
+
+        log.info("CurrentUserEmail: " + currentUserEmail);
+
+        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+
+        community.getMembers().forEach(user -> user.getCommunities().remove(community));
+        community.getMembers().clear();
+
+        if(!community.getOwner().getUserEmail().equals(currentUserEmail)){
+            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
+        }
+
+        communityService.deleteCommunity(communityId);
+        return "Delete Community Success!";
     }
 }

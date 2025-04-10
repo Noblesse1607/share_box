@@ -6,11 +6,19 @@ import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.CustomFeedResponse;
 import com.noblesse.auth_service.dto.response.PostResponse;
+import com.noblesse.auth_service.entity.Community;
+import com.noblesse.auth_service.entity.CustomFeed;
+import com.noblesse.auth_service.exception.AppException;
+import com.noblesse.auth_service.exception.ErrorCode;
+import com.noblesse.auth_service.repository.CustomFeedRepository;
 import com.noblesse.auth_service.service.CustomFeedService;
+import jakarta.persistence.EntityManager;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +31,8 @@ import java.util.List;
 public class CustomFeedController {
 
     CustomFeedService customFeedService;
+    CustomFeedRepository customFeedRepository;
+    EntityManager entityManager;
 
     @PostMapping("/create/{userId}")
     public ApiResponse<CustomFeedResponse> createCustomFeed(@RequestBody CustomFeedRequest request, @PathVariable Long userId){
@@ -82,6 +92,28 @@ public class CustomFeedController {
         return ApiResponse.<List<CustomFeedResponse>>builder()
                 .result(customFeedService.getUserCustomFeeds(userId))
                 .build();
+    }
+
+    @DeleteMapping("/delete/{feedId}")
+    @Transactional
+    public String deleteCustomFeed(@PathVariable Long feedId, Authentication authentication){
+
+        String currentUserEmail = authentication.getName();
+
+        log.info("CurrentUserEmail: " + currentUserEmail);
+
+        CustomFeed customFeed = customFeedRepository.findById(feedId).orElseThrow(() -> new AppException(ErrorCode.CUSTOMFEED_NOT_FOUND));
+
+        entityManager.createNativeQuery(
+                "DELETE FROM custom_feed_communities WHERE custom_feed_id = :feedId"
+        ).setParameter("feedId", feedId).executeUpdate();
+
+        if(!customFeed.getOwner().getUserEmail().equals(currentUserEmail)){
+            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
+        }
+
+        customFeedService.deleteFeed(feedId);
+        return "Delete Community Success!";
     }
 
     // "/custom-feed/all"

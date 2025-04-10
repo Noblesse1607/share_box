@@ -26,8 +26,9 @@
                      keyword: searchText
                  }
              )
+             console.log("Post response:", res.data);
              if (res.data.result) setSearchRes(res.data.result);
-         }
+         } 
          getPosts();
  
          const getComs = async() => {
@@ -37,6 +38,7 @@
                      keyword: searchText
                  }
              )
+             //console.log("Community response:", res.data);
              if (res.data.result) setComs(res.data.result);
          }
          getComs();
@@ -56,7 +58,7 @@
                                  :
                                  <>  
                                      {searchRes.map((post: any, index: number) => {
-                                         return <PostCard data={post} canNavigate isInCom={false}/>
+                                         return <PostCard key={post.postId} data={post} canNavigate isInCom={false}/>
                                      })}
                                  </>
                              }
