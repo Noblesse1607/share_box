@@ -88,8 +88,8 @@ export default function CommunityPage({ params }: CommunityPageProps) {
        <main className="w-full flex justify-center select-none">
          <title>{community ? community.name : "Share Box"}</title>
          <div className="w-[80%]">
-           <div className="w-full h-[100px] bg-textGrayColor1 rounded-xl overflow-hidden">
-             {community && <img src={community?.backgroundImg} alt="Background Image" className="w-full object-contain" />}
+           <div className="w-full h-[300px] bg-textGrayColor1 rounded-xl overflow-hidden">
+             {community && <img src={community?.backgroundImg} alt="Background Image" className="w-full h-full object-cover" />}
            </div>
            <div className="relative flex justify-between w-full">
              <div className="absolute -top-10 left-10 w-[120px] h-[120px] bg-textGrayColor1 border-2 border-white rounded-full overflow-hidden">

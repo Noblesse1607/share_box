@@ -257,8 +257,8 @@
                              </div>
                              <div className="w-[60%] pl-8 py-4">
                                  <div className="w-full rounded-md border  shadow-xl">
-                                     <div className="w-full h-[40px] overflow-hidden rounded-tl-md rounded-tr-md">
-                                         <img src={backgroundImg?.url} alt="" className="w-full object-contain"/>
+                                     <div className="w-full h-[100px] overflow-hidden rounded-tl-md rounded-tr-md">
+                                         <img src={backgroundImg?.url} alt="" className="w-full h-full object-cover"/>
                                      </div>
                                      <div className="w-full p-4 bg-textHeadingColor rounded-bl-md rounded-br-md break-words">
                                          <div className="w-full h-[80px] flex items-center gap-2">
