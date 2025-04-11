@@ -40,15 +40,17 @@ export default function CommunityPage({ params }: CommunityPageProps) {
     });
 
   const handleJoin = async () => {
-    setIsJoin(!isJoin);
+    //setIsJoin(!isJoin);
     if (!isJoin) {
       await axios.post(
         `http://localhost:8080/sharebox/community/add/${user.userId}/${communityId}`
       );
+      setIsJoin(true);
     } else {
       await axios.post(
         `http://localhost:8080/sharebox/community/leave/${user.userId}/${communityId}`
       );
+      setIsJoin(false);
     }
   };
 

@@ -43,9 +43,13 @@ public class PostService {
 
     VoteRepository voteRepository;
 
+    VoteCommentRepository voteCommentRepository;
+
     CommunityRepository communityRepository;
 
     CommentRepository commentRepository;
+
+    FavoriteRepository favoriteRepository;
 
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
@@ -184,7 +188,11 @@ public class PostService {
     }
 
     public void deletePost(Long postId){
-        commentRepository.deleteByPostId(postId);
+        voteRepository.deleteByPostId(postId);
+        voteCommentRepository.deleteByPostId(postId);
+        commentRepository.deleteChildCommentsByPostId(postId);
+        commentRepository.deleteParentCommentsByPostId(postId);
+        favoriteRepository.deleteByPostId(postId);
         postRepository.deleteById(postId);
     }
 

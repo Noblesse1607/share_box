@@ -3,8 +3,10 @@ package com.noblesse.auth_service.repository;
 import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {
     @Query("SELECT CASE WHEN COUNT(v) > 0 THEN TRUE ELSE FALSE END FROM Vote v WHERE v.post.id = :postId AND v.user.id = :userId")
@@ -19,4 +21,9 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     @Query("SELECT COUNT(v) FROM Vote v WHERE v.post = :post AND v.voteType = 'DOWNVOTE'")
     int countDownvotesByPost(Post post);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Vote v WHERE v.post.id = :postId")
+    void deleteByPostId(@Param("postId") Long postId);
 }
