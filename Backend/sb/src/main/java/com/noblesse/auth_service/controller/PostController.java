@@ -114,17 +114,17 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{postId}")
-    public String deletePost(@PathVariable Long postId, Authentication authentication){
+    public String deletePost(@PathVariable Long postId){
 
-        String currentUserEmail = authentication.getName();
+        //String currentUserEmail = authentication.getName();
 
-        log.info("CurrentUserEmail: " + currentUserEmail);
+        //log.info("CurrentUserEmail: " + currentUserEmail);
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
 
-        if(!post.getUser().getUserEmail().equals(currentUserEmail)){
-            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
-        }
+//        if(!post.getUser().getUserEmail().equals(currentUserEmail)){
+//            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
+//        }
 
         postService.deletePost(postId);
         return "Delete Post Success!";
@@ -132,10 +132,12 @@ public class PostController {
 
     @PutMapping("/update/{postId}")
     public ApiResponse<PostResponse> updatePost(@PathVariable Long postId, @ModelAttribute UpdatePostRequest request) throws IOException {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        //String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //log.info("UserEmail: " + userEmail);
-        User user = userRepository.findByUserEmail(userEmail).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        Long userId = postRepository.findByPostId(postId);
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         return ApiResponse.<PostResponse>builder()
                 .result(postService.updatePost(postId,request, user.getUserId()))

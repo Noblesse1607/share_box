@@ -96,11 +96,11 @@ public class CustomFeedController {
 
     @DeleteMapping("/delete/{feedId}")
     @Transactional
-    public String deleteCustomFeed(@PathVariable Long feedId, Authentication authentication){
+    public String deleteCustomFeed(@PathVariable Long feedId){
 
-        String currentUserEmail = authentication.getName();
+        //String currentUserEmail = authentication.getName();
 
-        log.info("CurrentUserEmail: " + currentUserEmail);
+        //log.info("CurrentUserEmail: " + currentUserEmail);
 
         CustomFeed customFeed = customFeedRepository.findById(feedId).orElseThrow(() -> new AppException(ErrorCode.CUSTOMFEED_NOT_FOUND));
 
@@ -108,9 +108,9 @@ public class CustomFeedController {
                 "DELETE FROM custom_feed_communities WHERE custom_feed_id = :feedId"
         ).setParameter("feedId", feedId).executeUpdate();
 
-        if(!customFeed.getOwner().getUserEmail().equals(currentUserEmail)){
-            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
-        }
+//        if(!customFeed.getOwner().getUserEmail().equals(currentUserEmail)){
+//            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
+//        }
 
         customFeedService.deleteFeed(feedId);
         return "Delete Community Success!";

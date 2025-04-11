@@ -14,6 +14,9 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Long countByUser(User user);
 
+    @Query("SELECT p.user.userId FROM Post p WHERE p.id = :postId")
+    Long findByPostId(@Param("postId") Long postId);
+
     @Query("SELECT p FROM Post p " +
             "WHERE p.user.userId = :userId")
     List<Post> getAllPost(@Param("userId") Long userId);

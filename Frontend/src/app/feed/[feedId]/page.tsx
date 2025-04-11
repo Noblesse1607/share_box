@@ -51,11 +51,13 @@
         //console.log("Token:" + user.token);
         const token = user.token;
         try {
-            await axios.delete(`http://localhost:8080/sharebox/custom-feed/delete/${feedId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await axios.delete(`http://localhost:8080/sharebox/custom-feed/delete/${feedId}`
+            //     , {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`,
+            //     },
+            // }
+        );
             setMessage({
                 type: "success",
                 message: "Deleted feed successfully!",

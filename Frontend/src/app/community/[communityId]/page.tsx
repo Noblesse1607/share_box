@@ -38,6 +38,7 @@ export default function CommunityPage({ params }: CommunityPageProps) {
         message: "",
         redirect: false
     });
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);  
 
   const handleJoin = async () => {
     //setIsJoin(!isJoin);
@@ -59,17 +60,20 @@ export default function CommunityPage({ params }: CommunityPageProps) {
     //console.log("Token:" + user.token);
     const token = user.token;
     try {
-        await axios.delete(`http://localhost:8080/sharebox/community/delete/${communityId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        await axios.delete(`http://localhost:8080/sharebox/community/delete/${communityId}`
+        //   , {
+        //     headers: {
+        //         Authorization: `Bearer ${token}`,
+        //     },
+        // }
+      );
         setMessage({
             type: "success",
             message: "Deleted community successfully!",
-            redirect: false
+            redirect: true
         });
         setShowMessage(true);
+        setTimeout(() => router.push("/"), 2000);
     } catch (error) {
         console.error("Error delete community:", error);
         setMessage({

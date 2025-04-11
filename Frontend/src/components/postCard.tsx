@@ -68,13 +68,17 @@
      const handleDeletePost = async (e: any) => {
         e.stopPropagation();
         //console.log("Token:" + user.token);
+        //console.log("User object:", user);
         const token = user.token;
         try {
-            await axios.delete(`http://localhost:8080/sharebox/post/delete/${data.postId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            await axios.delete(`http://localhost:8080/sharebox/post/delete/${data.postId}`
+            //, 
+            //     {
+            //     headers: {
+            //         Authorization: `Bearer ${token}`,
+            //     },
+            // }
+        );
             setMessage({
                 type: "success",
                 message: "Deleted post successfully!",

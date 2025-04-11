@@ -50,13 +50,13 @@ public class SecurityConfig {
                                 "/message/create/{chatroomId}/{senderId}/{receiverId}",
                                 "/message/create-media/{chatroomId}/{senderId}/{receiverId}", "/message/setSeen/{chatroomId}/{userId}",
                                 "/message/delete/{messageId}", "/message/edit/{messageId}", "/chatroom/change-status").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/users/delete/{userId}", "/topic/delete/{topicId}", "/ai-chat/history/{sessionId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/users/delete/{userId}", "/topic/delete/{topicId}", "/ai-chat/history/{sessionId}", "/post/delete/{postId}", "/community/delete/{communityId}", "/custom-feed/delete/{feedId}").permitAll()
                         //.requestMatchers(HttpMethod.GET, "/users/all").hasAuthority(Role.ADMIN.name())
                         .requestMatchers(HttpMethod.GET, "/ws/**", "/topic/**", "/ai-chat/history/{sessionId}", "/user-avatars/**", "/users/user/{userId}", "/custom-feed/{feedId}", "/images/**","/post/get-post/{userId}", "/post/{topicId}", "/post/get/{postId}", "/post/{postId}/score", "/post/posts", "/post/recommend-posts/{userId}", "/post/{postId}/upvote", "/post/{postId}/downvote", "/vote/type/{userId}/{postId}", "/post/all-posts", "/vote-comment/type/{userId}/{postId}/{commentId}", "/comment/parent/{postId}", "/comment/count/{postId}", "/comment/{postId}","/comment/child/{postId}/{parentCommentId}", "/community/all", "/community/members/{communityId}", "/post/community/{communityId}", "/custom-feed/all", "/custom-feed/recent-posts/{feedId}", "/custom-feed/user/{userId}", "/ai-chat/ask", "/community/user/{userId}", "/community/{communityId}", "/favorite/{userId}", "/friend/pending", "/friend/list", "/friend/online-list/{userId}",
                                 "/noti/receiver/{receiverId}", "/message/get/{chatroomId}",
                                 "/message/getlatest/{chatroomId}", "/chatroom/get/{user1Id}/{user2Id}",
                                 "/chatroom/getAll/{userId}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/topic/**", "/users/update/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/topic/**", "/users/update/{userId}", "/post/update/{postId}").permitAll()
                         .anyRequest().authenticated());
 
         // cau hinh dang nhap bang gg

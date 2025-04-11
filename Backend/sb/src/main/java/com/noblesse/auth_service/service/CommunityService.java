@@ -4,11 +4,12 @@ import com.noblesse.auth_service.dto.request.CommunityRequest;
 import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.response.CommunityResponse;
 import com.noblesse.auth_service.entity.Community;
+import com.noblesse.auth_service.entity.CustomFeed;
+import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.exception.AppException;
 import com.noblesse.auth_service.exception.ErrorCode;
-import com.noblesse.auth_service.repository.CommunityRepository;
-import com.noblesse.auth_service.repository.UserRepository;
+import com.noblesse.auth_service.repository.*;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,8 +27,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommunityService {
+    private final CustomFeedRepository customFeedRepository;
+    private final PostRepository postRepository;
     CommunityRepository communityRepository;
     UserRepository userRepository;
+    CommentRepository commentRepository;
+    VoteRepository voteRepository;
+    VoteCommentRepository voteCommentRepository;
+    FavoriteRepository favoriteRepository;
 
     private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
     private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
@@ -182,6 +189,26 @@ public class CommunityService {
     }
 
     public void deleteCommunity(Long communityId){
+        Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
+
+        List<CustomFeed> feeds = customFeedRepository.findAllByCommunitiesId(communityId);
+
+        for(CustomFeed feed : feeds){
+            feed.getCommunities().remove(community);
+        }
+        customFeedRepository.saveAll(feeds);
+
+        List<Post> posts = postRepository.getPostByCommunity(communityId);
+
+        for (Post post : posts){
+            Long postId = post.getId();
+            voteRepository.deleteByPostId(postId);
+            voteCommentRepository.deleteByPostId(postId);
+            commentRepository.deleteChildCommentsByPostId(postId);
+            commentRepository.deleteParentCommentsByPostId(postId);
+            favoriteRepository.deleteByPostId(postId);
+            postRepository.deleteById(postId);
+        }
         communityRepository.deleteById(communityId);
     }
 }

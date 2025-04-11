@@ -107,7 +107,7 @@ export default function EditPost({ post, onClose, onSuccess }: { post: any, onCl
                 formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        // Authorization: `Bearer ${token}`,
                         "Content-Type": "multipart/form-data",
                     },
                 }

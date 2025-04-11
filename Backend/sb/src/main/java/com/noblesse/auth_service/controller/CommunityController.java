@@ -116,20 +116,20 @@ public class CommunityController {
     }
 
     @DeleteMapping("/delete/{communityId}")
-    public String deleteCommunity(@PathVariable Long communityId, Authentication authentication){
+    public String deleteCommunity(@PathVariable Long communityId){
 
-        String currentUserEmail = authentication.getName();
+        //String currentUserEmail = authentication.getName();
 
-        log.info("CurrentUserEmail: " + currentUserEmail);
+        //log.info("CurrentUserEmail: " + currentUserEmail);
 
         Community community = communityRepository.findById(communityId).orElseThrow(() -> new AppException(ErrorCode.COMMUNITY_NOT_FOUND));
 
         community.getMembers().forEach(user -> user.getCommunities().remove(community));
         community.getMembers().clear();
 
-        if(!community.getOwner().getUserEmail().equals(currentUserEmail)){
-            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
-        }
+//        if(!community.getOwner().getUserEmail().equals(currentUserEmail)){
+//            throw new AppException(ErrorCode.YOU_ARE_NOT_THE_OWNER);
+//        }
 
         communityService.deleteCommunity(communityId);
         return "Delete Community Success!";
