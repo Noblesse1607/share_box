@@ -123,7 +123,8 @@ export default function EditPost({ post, onClose, onSuccess }: { post: any, onCl
                 setTimeout(() => {
                     onSuccess();
                     onClose();
-                    router.push('/');
+                    window.location.reload();
+                    //router.push('/');
                 }, 2000);
             }
         } catch (error) {

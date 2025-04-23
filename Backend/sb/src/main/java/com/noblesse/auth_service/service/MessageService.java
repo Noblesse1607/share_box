@@ -99,6 +99,38 @@ public class MessageService {
         return savedMes.toMessageResponse();
     }
 
+    private void deleteMediaFromSupabase(String mediaUrl) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Trích xuất đường dẫn file từ URL
+        // URL format: https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/messages/chatroomId/filename
+        String filePath = mediaUrl.replace(supabaseUrl, "");
+
+        // Tạo URL cho yêu cầu DELETE
+        String deleteUrl = supabaseUrl + filePath;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + supabaseApiKey);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    deleteUrl,
+                    HttpMethod.DELETE,
+                    requestEntity,
+                    String.class
+            );
+
+            log.info("Đã xóa media từ Supabase: {} với trạng thái: {}",
+                    mediaUrl, response.getStatusCode());
+        } catch (Exception e) {
+            log.error("Không thể xóa media từ Supabase: {} - Lỗi: {}",
+                    mediaUrl, e.getMessage());
+            // Chỉ ghi log lỗi và tiếp tục xử lý
+        }
+    }
+
     public String uploadMedia(byte[] mediaData, Long chatroomId, String fileName) {
         String uniqueFileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss-SSS"))
                 + "-" + UUID.randomUUID().toString() + getFileExtension(fileName);
@@ -155,6 +187,13 @@ public class MessageService {
     public void deleteMessage(Long messageId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new RuntimeException("Message not found"));
+
+        if (message.getType() == MessageType.IMAGE || message.getType() == MessageType.VIDEO) {
+            String mediaUrl = message.getContent();
+            if (mediaUrl != null && !mediaUrl.isEmpty()) {
+                deleteMediaFromSupabase(mediaUrl);
+            }
+        }
 
         Long receiverId = message.getReceiver().getUserId();
         Long chatroomId = message.getChatroom().getChatroomId();

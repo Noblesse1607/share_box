@@ -187,7 +187,51 @@ public class PostService {
         return post.toPostResponse();
     }
 
+    private void deleteMediaFromSupabase(String mediaUrl) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Extract the file path from the URL
+        // The URL format is: https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/post-media/userId/postId/filename
+        String filePath = mediaUrl.replace(supabaseUrl, "");
+
+        // Create DELETE request URL
+        String deleteUrl = supabaseUrl + filePath;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + supabaseApiKey);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    deleteUrl,
+                    HttpMethod.DELETE,
+                    requestEntity,
+                    String.class
+            );
+
+            log.info("Deleted media from Supabase: {} with status: {}",
+                    mediaUrl, response.getStatusCode());
+        } catch (Exception e) {
+            log.error("Failed to delete media from Supabase: {} - Error: {}",
+                    mediaUrl, e.getMessage());
+            // You can choose to throw an exception or just log the error
+        }
+    }
+
     public void deletePost(Long postId){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new AppException(ErrorCode.POST_NOT_FOUND));
+
+        List<String> mediaUrls = post.getMedia();
+        Long userId = post.getUser().getUserId();
+
+        if (mediaUrls != null && !mediaUrls.isEmpty()) {
+            for (String mediaUrl : mediaUrls) {
+                deleteMediaFromSupabase(mediaUrl);
+            }
+        }
+
         voteRepository.deleteByPostId(postId);
         voteCommentRepository.deleteByPostId(postId);
         commentRepository.deleteChildCommentsByPostId(postId);
@@ -242,6 +286,9 @@ public class PostService {
 
         // Remove media if specified
         if (request.getMediaToRemove() != null && !request.getMediaToRemove().isEmpty()) {
+            for (String mediaToRemove : request.getMediaToRemove()) {
+                deleteMediaFromSupabase(mediaToRemove);
+            }
             currentMedia.removeAll(request.getMediaToRemove());
         }
 

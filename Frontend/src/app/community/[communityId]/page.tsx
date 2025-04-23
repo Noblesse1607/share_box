@@ -12,6 +12,7 @@ import React from "react";
 import { ChooseTopicDropdown } from "@/components/topicDropdown";
 import PostCard from "@/components/postCard";
 import ToastMessage from "@/components/toastMessage";
+import TrashIcon from "../../../../public/trash-solid.svg";
 
 type CommunityPageProps = {
   params: Promise<{ communityId: string }>;
@@ -38,7 +39,9 @@ export default function CommunityPage({ params }: CommunityPageProps) {
         message: "",
         redirect: false
     });
-  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);  
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false); 
+  const [showMembersModal, setShowMembersModal] = useState<boolean>(false);
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null); 
 
   const handleJoin = async () => {
     //setIsJoin(!isJoin);
@@ -85,6 +88,53 @@ export default function CommunityPage({ params }: CommunityPageProps) {
     }
 };
 
+const handleDeletePost = async (postId: string) => {
+  try {
+    await axios.delete(`http://localhost:8080/sharebox/community/${communityId}/${postId}?userId=${user.userId}`);
+    setPosts(posts.filter(post => post.postId !== postId));
+    setMessage({
+      type: "success",
+      message: "Post removed successfully!",
+      redirect: false
+    });
+    setShowMessage(true);
+    window.location.reload();
+  } catch (error) {
+    console.error("Error removing post:", error);
+    setMessage({
+      type: "warning",
+      message: "Error removing post!",
+      redirect: false
+    });
+    setShowMessage(true);
+  }
+};
+
+const handleRemoveMember = async (memberId: string) => {
+  try {
+    await axios.post(`http://localhost:8080/sharebox/community/leave/${memberId}/${communityId}`);
+    // Update the community object to reflect the change
+    setCommunity({
+      ...community,
+      members: community.members.filter((member: any) => member.userId !== memberId)
+    });
+    setMessage({
+      type: "success",
+      message: "Member removed successfully!",
+      redirect: true
+    });
+    setShowMessage(true);
+  } catch (error) {
+    console.error("Error removing member:", error);
+    setMessage({
+      type: "warning",
+      message: "Error removing member!",
+      redirect: false
+    });
+    setShowMessage(true);
+  }
+};
+
   const handleCreatePost = () => {
     sessionStorage.setItem("selectedCommunity", community.communityId);
     router.push('/createpost');
@@ -95,7 +145,12 @@ export default function CommunityPage({ params }: CommunityPageProps) {
       const res = await axios.get(
         `http://localhost:8080/sharebox/community/${communityId}`
       );
-      if (res.data.result) setCommunity(res.data.result);
+      if (res.data.result){
+        // console.log("OwnerId la :" + res.data.result.ownerId);
+        // console.log("UserId la :" + user.userId); 
+        setCommunity(res.data.result);
+        setIsOwner(res.data.result.ownerId === user.userId);
+      }
     };
     getCommunity();
   }, [isJoin]);
@@ -153,9 +208,19 @@ export default function CommunityPage({ params }: CommunityPageProps) {
                  </div>
                }
                {(community && community?.ownerId === user.userId) && 
+               <>
+               <div onClick={() => setShowMembersModal(true)} className="w-[150px] h-[40px] rounded-full bg-blue-500 text-white flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.05] duration-150">
+                 <Image
+                   src={MemberIcon}
+                   alt="Member Icon"
+                   className="w-[20px] ml-3"
+                 />
+                 <p className="ml-3">Manage Members</p>
+               </div>
                <div onClick={handleDeleteCommunity} className="w-[150px] h-[40px] rounded-full bg-red-500 text-white flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.05] duration-150">
                    <p>Delete Community</p>
                </div>
+               </>
                 }
                {(community && community?.ownerId != user.userId) &&
                  <button onClick={handleJoin} className="w-[80px] h-[40px] rounded-full cursor-pointer hover:scale-[1.05] duration-150 bg-textHeadingColor text-white">
@@ -171,7 +236,20 @@ export default function CommunityPage({ params }: CommunityPageProps) {
                  :
                  <div className="">
                    {posts.map((post: any) => {
-                     return <PostCard key={post.postId} data={post} canNavigate isInCom/>
+                     const showDeleteButton = isOwner && post.userId !== community.ownerId;
+                     return (
+                       <div key={post.postId} className="relative">
+                         <PostCard data={post} canNavigate isInCom/>
+                         {showDeleteButton && (
+                           <div 
+                             onClick={() => handleDeletePost(post.postId)}
+                             className="absolute top-10 right-20 bg-red-500 p-2 rounded-full cursor-pointer hover:bg-red-600 transition"
+                           >
+                             <Image src={TrashIcon} alt="Delete" width={15} height={15} />
+                           </div>
+                         )}
+                       </div>
+                     )
                    })}
                  </div>
                }
@@ -221,6 +299,53 @@ export default function CommunityPage({ params }: CommunityPageProps) {
           </div>
         </div>
        </div>
+       {showMembersModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-[500px] max-h-[80vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">Community Members</h2>
+                <button 
+                  onClick={() => setShowMembersModal(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="mt-4">
+                <h3 className="font-semibold mb-2">Owner</h3>
+                <div className="flex items-center p-2 bg-gray-100 rounded-md mb-4">
+                  <div className="w-[40px] h-[40px] rounded-full bg-textGrayColor1 overflow-hidden">
+                    <img src={owner ? owner?.avatar : user.avatar} alt="Avatar" className="w-full h-full object-cover"/>
+                  </div>
+                  <p className="ml-3 font-medium">{owner ? owner?.username : user.username}</p>
+                </div>
+                
+                <h3 className="font-semibold mb-2">Members ({community?.members?.length || 0})</h3>
+                {community?.members?.filter((member: any) => member.userId !== community.ownerId).map((member: any) => (
+                  <div key={member.userId} className="flex items-center justify-between p-2 bg-gray-100 rounded-md mb-2">
+                    <div className="flex items-center">
+                      <div className="w-[40px] h-[40px] rounded-full bg-textGrayColor1 overflow-hidden">
+                        <img src={member.avatar} alt="Avatar" className="w-full h-full object-cover"/>
+                      </div>
+                      <p className="ml-3 font-medium">{member.username}</p>
+                    </div>
+                    {isOwner && (
+                      <button 
+                        onClick={() => handleRemoveMember(member.userId)}
+                        className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {community?.members?.filter((member: any) => member.userId !== community.ownerId).length === 0 && (
+                  <p className="text-gray-500 text-center py-2">No members yet</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </main>
       {showMessage ? <ToastMessage type={message.type} message={message.message} redirect={message.redirect} setShowMessage={setShowMessage} position="top-right"/> : <></>}
     </MainLayout>

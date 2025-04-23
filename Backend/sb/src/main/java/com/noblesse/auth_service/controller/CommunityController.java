@@ -2,16 +2,17 @@ package com.noblesse.auth_service.controller;
 
 import com.noblesse.auth_service.dto.request.AvatarRequest;
 import com.noblesse.auth_service.dto.request.BackgroundImgRequest;
-import com.noblesse.auth_service.dto.request.CommunityRequest;
+import com.noblesse.auth_service.dto.request.CommunityCreateRequest;
 import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.CommunityResponse;
+import com.noblesse.auth_service.dto.response.UserResponse;
 import com.noblesse.auth_service.entity.Community;
-import com.noblesse.auth_service.entity.Post;
+import com.noblesse.auth_service.entity.CommunityRequest;
 import com.noblesse.auth_service.entity.User;
+import com.noblesse.auth_service.enums.Status;
 import com.noblesse.auth_service.exception.AppException;
 import com.noblesse.auth_service.exception.ErrorCode;
-import com.noblesse.auth_service.repository.CommentRepository;
 import com.noblesse.auth_service.repository.CommunityRepository;
 import com.noblesse.auth_service.service.CommunityService;
 import lombok.AccessLevel;
@@ -19,11 +20,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/community")
@@ -35,7 +36,7 @@ public class CommunityController {
     CommunityRepository communityRepository;
 
     @PostMapping("/create/{userId}")
-    public ApiResponse<CommunityResponse> createCommunity(@RequestBody CommunityRequest request, @PathVariable Long userId){
+    public ApiResponse<CommunityResponse> createCommunity(@RequestBody CommunityCreateRequest request, @PathVariable Long userId){
         return ApiResponse.<CommunityResponse>builder()
                 .result(communityService.createCommunity(request, userId))
                 .build();
@@ -133,5 +134,64 @@ public class CommunityController {
 
         communityService.deleteCommunity(communityId);
         return "Delete Community Success!";
+    }
+
+    @DeleteMapping("/{communityId}/{postId}")
+    public ResponseEntity<?> removePostFromCommunity(@PathVariable Long communityId, @PathVariable Long postId, @RequestParam("userId") Long userId){
+        boolean isRemoved = communityService.removePostFromCommunity(communityId,postId,userId);
+        if (isRemoved) {
+            return ResponseEntity.ok().body("Remove post from community successfully!");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to remove post from community");
+        }
+    }
+
+    @PostMapping("/{communityId}/request-join")
+    public ResponseEntity<String> requestToJoinCommunity(
+            @PathVariable Long communityId,
+            @RequestParam Long userId) {
+        communityService.requestToJoinCommunity(userId, communityId);
+        return ResponseEntity.ok("Join request sent to community owner");
+    }
+
+    // API để lấy danh sách yêu cầu tham gia theo community
+    @GetMapping("/{communityId}/pending-requests")
+    public ResponseEntity<List<UserResponse>> getPendingRequestsByCommunity(
+            @PathVariable Long communityId) {
+        List<CommunityRequest> requests = communityService.getPendingRequestsByCommunityId(communityId);
+        List<UserResponse> userResponses = requests.stream()
+                .map(req -> req.getRequester().toUserResponse())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userResponses);
+    }
+
+    // API để lấy danh sách yêu cầu tham gia theo owner
+    @GetMapping("/owner/{ownerId}/pending-requests")
+    public ResponseEntity<List<UserResponse>> getPendingRequestsByOwner(
+            @PathVariable Long ownerId) {
+        List<CommunityRequest> requests = communityService.getPendingRequestsByOwnerId(ownerId);
+        List<UserResponse> userResponses = requests.stream()
+                .map(req -> req.getRequester().toUserResponse())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userResponses);
+    }
+
+    // API để trả lời yêu cầu tham gia
+    @PostMapping("/request/{requestId}/respond")
+    public ResponseEntity<String> respondToJoinRequest(
+            @PathVariable Long requestId,
+            @RequestParam Status status,
+            @RequestParam Long ownerId) {
+        communityService.respondToCommunityRequest(requestId, status, ownerId);
+        return ResponseEntity.ok("Request processed successfully");
+    }
+
+    // API để hủy yêu cầu tham gia
+    @DeleteMapping("/{communityId}/cancel-request")
+    public ResponseEntity<String> cancelJoinRequest(
+            @PathVariable Long communityId,
+            @RequestParam Long userId) {
+        communityService.cancelJoinRequest(userId, communityId);
+        return ResponseEntity.ok("Join request cancelled");
     }
 }

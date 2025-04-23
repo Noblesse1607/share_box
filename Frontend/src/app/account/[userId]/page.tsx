@@ -228,6 +228,26 @@ import ToastMessage from "@/components/toastMessage";
             `http://localhost:8080/sharebox/friend/cancel-request?requesterId=${user.userId}&receiverId=${userId}`
         )
     }
+
+    const handleUnFriend = async() => {
+        try {
+            setIsFriend("ACCEPTED");
+            await axios.delete(
+                `http://localhost:8080/sharebox/friend/${user.userId}?userId=${userId}`
+            );
+            
+            // Reload lại trang sau khi unfriend thành công
+            window.location.reload();
+            
+            // Hoặc nếu bạn sử dụng Next.js router:
+            // router.reload();
+        } catch (error) {
+            console.error("Error unfriending user:", error);
+            // Có thể thêm xử lý lỗi ở đây nếu cần
+            // Ví dụ: reset lại state nếu có lỗi
+            setIsFriend("ACCEPTED"); // Reset lại state nếu API gọi thất bại
+        }
+    }
  
      useEffect(() => {
          if (user.userId != userId) {
@@ -496,13 +516,13 @@ import ToastMessage from "@/components/toastMessage";
                                      <p className="text-sm text-white">Cancle Request</p>
                                  </div>
                                  :
-                                 <div className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-mainColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
+                                 <div onClick={handleUnFriend} className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-mainColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
                                      <Image
                                          src={ChatIcon}
                                          alt="Chat Icon"
                                          className="w-[12px]"
                                      />
-                                     <p className="text-sm text-white">Message</p>
+                                     <p className="text-sm text-white">Unfriend</p>
                                  </div>
                              }
                          </div>

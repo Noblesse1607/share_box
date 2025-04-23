@@ -6,6 +6,7 @@
  import CloseIcon from "../../../../public/xmark-solid-black.svg";
  import axios from "axios";
  import React from "react";
+ import { useRouter } from "next/navigation";
  import { useEffect, useRef, useState } from "react";
  import CustomFeedIcon from "../../../../public/category.svg";
  import Image from "next/image";
@@ -20,6 +21,7 @@
  
  export default function CustomFeedPage({ params }: CustomFeedPageProps) {
      const { feedId } = React.use(params);
+     const router = useRouter();
      const userString = sessionStorage.getItem("user");
      const user = userString ? JSON.parse(userString) : {};
      const boxRef = useRef<HTMLDivElement>(null);
@@ -61,9 +63,10 @@
             setMessage({
                 type: "success",
                 message: "Deleted feed successfully!",
-                redirect: false
+                redirect: true
             });
             setShowMessage(true);
+            setTimeout(() => router.push("/"), 2000);
         } catch (error) {
             console.error("Error delete feed:", error);
             setMessage({

@@ -20,6 +20,18 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
 
     Optional<FriendRequest> findByRequesterUserIdAndReceiverUserId(Long requesterId, Long receiverId);
 
+    Optional<FriendRequest> findByRequesterUserIdAndReceiverUserIdAndStatus(Long requesterId, Long receiverId, Status status);
+
+    @Query("SELECT f FROM FriendRequest f WHERE " +
+            "((f.requester.userId = :userId AND f.receiver.userId = :friendId) OR " +
+            "(f.requester.userId = :friendId AND f.receiver.userId = :userId)) " +
+            "AND f.status = :status")
+    Optional<FriendRequest> findByUserIdsAndStatus(
+            @Param("userId") Long userId,
+            @Param("friendId") Long friendId,
+            @Param("status") Status status
+    );
+
     @Query("SELECT f.requester FROM FriendRequest f WHERE f.receiver.id = :userId AND f.status = com.noblesse.auth_service.enums.Status.ACCEPTED " +
             "UNION " +
             "SELECT f.receiver FROM FriendRequest f WHERE f.requester.id = :userId AND f.status = com.noblesse.auth_service.enums.Status.ACCEPTED")

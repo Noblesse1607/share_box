@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/parachute-box-solid.svg" />
+        <link rel="icon" href="/spa2-solid.svg" />
       </head>
       <body>
       <UnreadMesProvider>

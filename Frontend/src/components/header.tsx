@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image";
-import Logo from "../../public/parachute-box-solid.svg";
+import Logo from "../../public/spa2-solid.svg";
 import GlassIcon from "../../public/magnifying-glass-solid.svg";
 import ChatIcon from "../../public/comment-solid.svg";
 import PlusIcon from "../../public/plus-solid-black.svg";
@@ -176,7 +176,7 @@ export default function Header({ user } : { user: any }) {
                     alt="Logo"
                     className="w-[35px]"
                 />
-                <p className="text-mainColor text-[20px] font-bold">Share Box</p>
+                <p onClick={() => router.push(`/`)} className="text-mainColor text-[20px] font-bold">Share Box</p>
             </div>
             <div className="relative flex items-center gap-4 p-4 w-[600px] h-[50px] bg-boxBackground rounded-full">
                 <Image 

@@ -74,4 +74,14 @@ public class FriendRequestController {
                 .build();
     }
 
+    @DeleteMapping("/{friendId}")
+    public ResponseEntity<String> unfriendMethod1(@PathVariable Long friendId,
+                                                  @RequestParam Long userId) {
+        log.info("Request to unfriend user {} from user {}", friendId, userId);
+
+        friendRequestService.unfriend(userId, friendId);
+
+        return ResponseEntity.ok("Unfriended successfully");
+    }
+
 }

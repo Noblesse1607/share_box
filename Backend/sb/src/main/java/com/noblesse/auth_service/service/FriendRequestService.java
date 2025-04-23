@@ -4,18 +4,26 @@ import com.noblesse.auth_service.dto.response.FriendPendingResponse;
 import com.noblesse.auth_service.dto.response.UserResponse;
 import com.noblesse.auth_service.entity.ChatRoom;
 import com.noblesse.auth_service.entity.FriendRequest;
+import com.noblesse.auth_service.entity.Message;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.enums.ChatRoomStatus;
+import com.noblesse.auth_service.enums.MessageType;
 import com.noblesse.auth_service.enums.Status;
 import com.noblesse.auth_service.repository.ChatroomRepository;
 import com.noblesse.auth_service.repository.FriendRequestRepository;
+import com.noblesse.auth_service.repository.MessageRepository;
 import com.noblesse.auth_service.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +44,11 @@ public class FriendRequestService {
     NotificationService notificationService;
 
     ChatroomRepository chatroomRepository;
+
+    MessageRepository messageRepository;
+
+    private static final String supabaseUrl = "https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/";
+    private static final String supabaseApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWZsemJsbmd3cG5qaWZ2d3FvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc3OTY3NzMsImV4cCI6MjA0MzM3Mjc3M30.1Xj5Ndd1J6-57JQ4BtEjBTxUqmVNgOhon1BhG1PSz78";
 
     public FriendRequest sendFriendRequest(Long requesterId, Long receiverId) {
         User requester = userRepository.findById(requesterId)
@@ -176,5 +189,89 @@ public class FriendRequestService {
             log.error("Error in notifyFriendsAboutOnlineStatus for user {}", user.getUserId(), e);
         }
     }
+
+    private void deleteMediaFromSupabase(String mediaUrl) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Trích xuất đường dẫn file từ URL
+        // URL format: https://eluflzblngwpnjifvwqo.supabase.co/storage/v1/object/images/messages/chatroomId/filename
+        String filePath = mediaUrl.replace(supabaseUrl, "");
+
+        // Tạo URL cho yêu cầu DELETE
+        String deleteUrl = supabaseUrl + filePath;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + supabaseApiKey);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    deleteUrl,
+                    HttpMethod.DELETE,
+                    requestEntity,
+                    String.class
+            );
+
+            log.info("Đã xóa media từ Supabase: {} với trạng thái: {}",
+                    mediaUrl, response.getStatusCode());
+        } catch (Exception e) {
+            log.error("Không thể xóa media từ Supabase: {} - Lỗi: {}",
+                    mediaUrl, e.getMessage());
+            // Chỉ ghi log lỗi và tiếp tục xử lý
+        }
+    }
+
+    public void unfriend(Long userId, Long friendId) {
+        // Kiểm tra xem người dùng có tồn tại không
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        User friend = userRepository.findById(friendId)
+                .orElseThrow(() -> new RuntimeException("Friend not found"));
+
+        // Tìm kiếm quan hệ bạn bè (có thể là 2 chiều - user có thể là requester hoặc receiver)
+        Optional<FriendRequest> friendshipOpt = friendRequestRepository.findByRequesterUserIdAndReceiverUserIdAndStatus(
+                userId, friendId, Status.ACCEPTED);
+
+        if (!friendshipOpt.isPresent()) {
+            friendshipOpt = friendRequestRepository.findByRequesterUserIdAndReceiverUserIdAndStatus(
+                    friendId, userId, Status.ACCEPTED);
+        }
+
+        FriendRequest friendship = friendshipOpt.orElseThrow(
+                () -> new RuntimeException("You are not friends with this user"));
+
+        // Xóa quan hệ bạn bè
+        friendRequestRepository.delete(friendship);
+
+        // Tìm và xóa chatroom nếu có
+        Optional<ChatRoom> chatRoomOpt = chatroomRepository.findByUser1AndUser2OrUser2AndUser1(user, friend);
+        List<Message> messages = messageRepository.findByChatroomId(chatRoomOpt.get().getChatroomId());
+        for(Message message : messages){
+            if(message.getType() == MessageType.IMAGE || message.getType() == MessageType.VIDEO){
+                String mediaUrl = message.getContent();
+                if(mediaUrl != null && !mediaUrl.isEmpty()){
+                    deleteMediaFromSupabase(mediaUrl);
+                }
+            }
+        }
+
+        messageRepository.deleteAll(messages);
+        if (!chatRoomOpt.isPresent()) {
+            chatRoomOpt = chatroomRepository.findByUser1AndUser2OrUser2AndUser1(friend, user);
+        }
+
+        chatRoomOpt.ifPresent(chatroomRepository::delete);
+
+        // Thông báo cho người bị hủy kết bạn
+        notificationService.notifyUser(
+                friendId,
+                user.getUsername() + " has removed you from their friends list.",
+                user.getAvatar()
+        );
+
+        log.info("User {} unfriended user {}", userId, friendId);
+    }
+
 
 }
