@@ -2,8 +2,11 @@ package com.noblesse.auth_service.service;
 
 import com.noblesse.auth_service.dto.request.GoogleLoginRequest;
 import com.noblesse.auth_service.dto.request.RegisterRequest;
+import com.noblesse.auth_service.dto.request.SearchRequest;
 import com.noblesse.auth_service.dto.request.UserAddTopicRequest;
+import com.noblesse.auth_service.dto.response.PostResponse;
 import com.noblesse.auth_service.dto.response.UserResponse;
+import com.noblesse.auth_service.entity.Post;
 import com.noblesse.auth_service.entity.Topic;
 import com.noblesse.auth_service.entity.User;
 import com.noblesse.auth_service.enums.Role;
@@ -189,5 +192,10 @@ public class UserService {
                 });
         friendRequestService.notifyFriendsAboutOnlineStatus(user);
         return user.toUserResponse();
+    }
+
+    public List<UserResponse> searchUsers(SearchRequest request) {
+        List<User> users = userRepository.findByNameContainingIgnoreCase(request);
+        return users.stream().map(User::toUserResponse).collect(Collectors.toList());
     }
 }

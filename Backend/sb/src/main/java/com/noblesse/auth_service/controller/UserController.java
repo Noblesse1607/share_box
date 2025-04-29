@@ -1,9 +1,6 @@
 package com.noblesse.auth_service.controller;
 
-import com.noblesse.auth_service.dto.request.AvatarRequest;
-import com.noblesse.auth_service.dto.request.GoogleLoginRequest;
-import com.noblesse.auth_service.dto.request.RegisterRequest;
-import com.noblesse.auth_service.dto.request.UserAddTopicRequest;
+import com.noblesse.auth_service.dto.request.*;
 import com.noblesse.auth_service.dto.response.ApiResponse;
 import com.noblesse.auth_service.dto.response.UserResponse;
 import com.noblesse.auth_service.entity.User;
@@ -109,6 +106,13 @@ public class UserController {
 
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getAllUsers())
+                .build();
+    }
+
+    @PostMapping("/search")
+    public ApiResponse<List<UserResponse>> searchUser(@RequestBody SearchRequest request){
+        return ApiResponse.<List<UserResponse>>builder()
+                .result(userService.searchUsers(request))
                 .build();
     }
 

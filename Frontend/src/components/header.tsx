@@ -213,7 +213,7 @@ export default function Header({ user } : { user: any }) {
                                  alt="Glass Icon"
                                  className="w-[20px]"
                              />
-                             <p className="text-sm text-textGrayColor1 font-semibold">Search for posts with "{searchText}"</p>
+                             <p className="text-sm text-textGrayColor1 font-semibold">Search for posts/users with "{searchText}"</p>
                          </div>
                      </div>
                  }
