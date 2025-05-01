@@ -54,4 +54,17 @@ public class CommentController {
                 .result(commentService.getChildComments(postId, parentCommentId))
                 .build();
     }
+
+    @DeleteMapping("/{commentId}")
+    public String deleteComment(@PathVariable Long commentId){
+        commentService.deleteComment(commentId);
+        return "Delete comment successful!";
+    }
+
+    @PatchMapping("/{commentId}")
+    public ApiResponse<CommentResponse> updateComment(@PathVariable Long commentId, @RequestBody CommentRequest request){
+        return ApiResponse.<CommentResponse>builder()
+                .result(commentService.updateComment(commentId, request))
+                .build();
+    }
 }

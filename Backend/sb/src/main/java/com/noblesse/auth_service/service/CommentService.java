@@ -113,4 +113,14 @@ public class CommentService {
         return childComments.stream()
                 .map(Comment::toCommentResponse).collect(Collectors.toList());
     }
+
+    public CommentResponse updateComment(Long commentId, CommentRequest request){
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+
+        comment.setContent(request.getContent());
+
+        commentRepository.save(comment);
+
+        return comment.toCommentResponse();
+    }
 }
