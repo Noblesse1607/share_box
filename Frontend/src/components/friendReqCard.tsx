@@ -32,10 +32,10 @@ import axios from "axios";
                  <h3 className="text-textHeadingColor font-bold">{user.username}</h3>
                  {status == "PENDING" &&
                      <div className="flex gap-3 mt-2">
-                         <button onClick={handleAddFriend} className="w-[100px] p-1 text-sm bg-mainColor rounded-lg text-white hover:scale-[1.03] duration-150">
+                         <button onClick={handleAddFriend} className="w-[100px] p-1 text-sm bg-voteDownColor rounded-lg text-white hover:scale-[1.03] duration-150">
                              Accept
                          </button>
-                         <button onClick={handleDeclineFriend} className="w-[100px] bg-voteDownColor rounded-lg text-white hover:scale-[1.03] duration-150">
+                         <button onClick={handleDeclineFriend} className="w-[100px] bg-warningMessageBackground rounded-lg text-white hover:scale-[1.03] duration-150">
                              Decline
                          </button>
                      </div>

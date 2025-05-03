@@ -8,7 +8,7 @@
  import CommentIcon from "../../public/comment-solid-white.svg";
  import ImageIcon from "../../public/image-solid-white.svg";
  import CloseIcon from "../../public/xmark-solid.svg";
- import OptionIConPink from "../../public/bookmark-solid2.svg";
+ import OptionIConPink from "../../public/bookmark-solid3.svg";
  import Arrow from "../../public/angle-up-solid-white.svg";
  import EditPost from "./editCard";
  import ToastMessage from "./toastMessage";

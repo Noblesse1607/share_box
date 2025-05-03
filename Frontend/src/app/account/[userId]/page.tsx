@@ -516,7 +516,7 @@ import ToastMessage from "@/components/toastMessage";
                                      <p className="text-sm text-white">Cancle Request</p>
                                  </div>
                                  :
-                                 <div onClick={handleUnFriend} className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-mainColor rounded-full hover:scale-[1.03] cursor-pointer duration-150">
+                                 <div onClick={handleUnFriend} className="flex gap-2 w-[130px] h-[30px] items-center justify-center bg-warningMessageBackground rounded-full hover:scale-[1.03] cursor-pointer duration-150">
                                      <Image
                                          src={ChatIcon}
                                          alt="Chat Icon"
