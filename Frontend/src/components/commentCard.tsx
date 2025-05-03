@@ -7,7 +7,7 @@
  import ExtendIcon from "../../public/square-plus-regular.svg";
  import CollapseIcon from "../../public/square-minus-regular.svg";
  import CommentIcon from "../../public/comment-solid.svg";
- import SendIcon from "../../public/paper-plane-solid-pink.svg";
+ import SendIcon from "../../public/paper-plane-solid2.svg";
  import EditIcon from "../../public/pen-to-square-solid.svg";
  import DeleteIcon from "../../public/trash-solid.svg";
  import MoreIcon from "../../public/ellipsis-vertical-solid.svg";

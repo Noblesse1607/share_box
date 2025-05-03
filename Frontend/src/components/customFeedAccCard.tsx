@@ -1,4 +1,4 @@
-import CategoryICon from "../../public/category-pink.svg";
+import CategoryICon from "../../public/category-solid-bl.svg";
  import Image from "next/image";
  import { useRouter } from "next/navigation";
  

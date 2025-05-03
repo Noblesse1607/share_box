@@ -401,6 +401,7 @@ export default function ForgotPassword() {
             message={message.message} 
             redirect={message.redirect} 
             setShowMessage={setShowMessage}
+            position="top-right"
           /> 
           : <></>
         }

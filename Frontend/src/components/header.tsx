@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image";
-import Logo from "../../public/spa2-solid.svg";
+import Logo from "../../public/spa3-solid.svg";
 import GlassIcon from "../../public/magnifying-glass-solid.svg";
 import ChatIcon from "../../public/comment-solid.svg";
 import PlusIcon from "../../public/plus-solid-black.svg";

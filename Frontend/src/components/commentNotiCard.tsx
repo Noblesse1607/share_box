@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ChatIcon from "../../public/comment-dots-solid.svg";
-import ThumbUpIcon from "../../public/thumbs-up-solid.svg"; // You'll need to add this SVG
-import ThumbDownIcon from "../../public/thumbs-down-solid.svg"; // You'll need to add this SVG
+import ThumbUpIcon from "../../public/thumbs-up-solid2.svg"; 
+import ThumbDownIcon from "../../public/thumbs-down-solid.svg"; 
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { SetStateAction } from "react";

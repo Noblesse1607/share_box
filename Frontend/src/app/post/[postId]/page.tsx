@@ -1,7 +1,7 @@
 "use client"; 
 
 import NavigateIcon from "../../../../public/arrow-right-solid.svg";
-import SendIcon from "../../../../public/paper-plane-solid-pink.svg";
+import SendIcon from "../../../../public/paper-plane-solid2.svg";
 
 import MainLayout from "@/components/mainLayout";
 import PostCard from "@/components/postCard";

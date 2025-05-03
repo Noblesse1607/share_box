@@ -1,7 +1,7 @@
 'use client'
  
- import VoteIcon from "../../public/thumbs-up-solid.svg";
- import CommentIcon from "../../public/comment-solid-pink.svg";
+ import VoteIcon from "../../public/thumbs-up-solid2.svg";
+ import CommentIcon from "../../public/comment-solid2.svg";
  
  import { useRouter } from "next/navigation";
  import Image from "next/image";

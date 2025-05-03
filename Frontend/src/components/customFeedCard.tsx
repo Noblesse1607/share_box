@@ -1,4 +1,4 @@
-import FeedIcon from "../../public/category-pink.svg";
+import FeedIcon from "../../public/category-solid-bl.svg";
  import Image from "next/image";
  import { useRouter } from "next/navigation";
  

@@ -16,13 +16,13 @@
     --image-block: #2b313c63;
     --post-hover: #e5ebee6e;
 
-    --main-color: #EF7575;
-    --button-color: #EF9575;
-    --light-button-color: #ef9575b3;
+    --main-color: #6e72e6;
+    --button-color: #9699e7;
+    --light-button-color: #6e72e6;
     --input-border-color: #E8AC54;
     --warning-color: #FF0000;
     --warning-message-background: #FF4B4B;
-    --image-backround: #FFD4C5;
+    --image-backround: #9699e7;
     --online-color: #0ec70a;
     --vote-down-color: #545AE8;
 }
